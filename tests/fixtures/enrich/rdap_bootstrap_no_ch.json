@@ -1,0 +1,10 @@
+{
+  "description": "RDAP bootstrap file for Domain Name System registrations (trimmed fixture, based on the real IANA file's shape)",
+  "publication": "2026-07-23T02:00:03Z",
+  "version": "1.0",
+  "services": [
+    [["com"], ["https://rdap.verisign.com/com/v1/"]],
+    [["cz"], ["https://rdap.nic.cz/"]],
+    [["blog"], ["https://rdap.blog.fury.ca/rdap/"]]
+  ]
+}

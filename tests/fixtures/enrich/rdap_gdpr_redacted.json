@@ -1,0 +1,32 @@
+{
+  "objectClassName": "domain",
+  "ldhName": "EVIL-PHISH.EXAMPLE",
+  "status": ["client transfer prohibited"],
+  "entities": [
+    {
+      "objectClassName": "entity",
+      "roles": ["registrar"],
+      "vcardArray": ["vcard", [["version", {}, "text", "4.0"], ["fn", {}, "text", "Cheap Registrar LLC"]]]
+    },
+    {
+      "objectClassName": "entity",
+      "roles": ["registrant"],
+      "vcardArray": [
+        "vcard",
+        [
+          ["version", {}, "text", "4.0"],
+          ["fn", {}, "text", "REDACTED FOR PRIVACY"],
+          ["adr", {}, "text", ["", "", "", "", "", "", ""]]
+        ]
+      ]
+    }
+  ],
+  "nameservers": [
+    {"objectClassName": "nameserver", "ldhName": "ns1.cheap-dns.example"},
+    {"objectClassName": "nameserver", "ldhName": "ns2.cheap-dns.example"}
+  ],
+  "events": [
+    {"eventAction": "registration", "eventDate": "2026-08-01T00:00:00Z"},
+    {"eventAction": "expiration", "eventDate": "2027-08-01T00:00:00Z"}
+  ]
+}

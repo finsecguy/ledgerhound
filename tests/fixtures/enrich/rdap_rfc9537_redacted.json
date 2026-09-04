@@ -1,0 +1,38 @@
+{
+  "objectClassName": "domain",
+  "ldhName": "NEWSTYLE-REDACTED.EXAMPLE",
+  "status": ["client transfer prohibited"],
+  "rdapConformance": ["rdap_level_0", "redacted"],
+  "entities": [
+    {
+      "objectClassName": "entity",
+      "roles": ["registrar"],
+      "vcardArray": ["vcard", [["version", {}, "text", "4.0"], ["fn", {}, "text", "Modern Registrar Inc"]]]
+    },
+    {
+      "objectClassName": "entity",
+      "roles": ["registrant"],
+      "vcardArray": ["vcard", [["version", {}, "text", "4.0"], ["fn", {}, "text", ""]]]
+    }
+  ],
+  "redacted": [
+    {
+      "name": {"type": "Registrant Name"},
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='fn')][3]",
+      "method": "emptyValue",
+      "reason": {"description": "Server policy"}
+    },
+    {
+      "name": {"type": "Registrant Address"},
+      "method": "removal",
+      "reason": {"description": "Server policy"}
+    }
+  ],
+  "nameservers": [
+    {"objectClassName": "nameserver", "ldhName": "ns1.modern-dns.example"}
+  ],
+  "events": [
+    {"eventAction": "registration", "eventDate": "2026-01-01T00:00:00Z"},
+    {"eventAction": "expiration", "eventDate": "2027-01-01T00:00:00Z"}
+  ]
+}

@@ -1,0 +1,14 @@
+################################################################
+# abuse.ch URLhaus Database Dump (CSV - recent URLs only)      #
+# Last updated: 2026-09-02 10:22:27 (UTC)                      #
+#                                                              #
+# Terms Of Use: https://urlhaus.abuse.ch/api/                  #
+# For questions please contact urlhaus [at] abuse.ch           #
+################################################################
+#
+# id,dateadded,url,url_status,last_online,threat,tags,urlhaus_link,reporter
+"3911345","2026-09-02 10:22:27","http://222.246.41.226:44313/i","online","2026-09-02 10:22:27","malware_download","32-bit,arm,elf,mirai,Mozi","https://urlhaus.abuse.ch/url/3911345/","geenensp"
+"3911344","2026-09-02 10:07:21","http://222.141.117.155:41936/bin.sh","online","2026-09-02 10:07:21","malware_download","32-bit,elf,mips,Mozi","https://urlhaus.abuse.ch/url/3911344/","geenensp"
+this is a malformed row with, way too few columns
+"3911343","2026-09-02 10:06:07","http://105.186.83.56:41911/i","online","2026-09-02 10:06:07","malware_download","mirai","https://urlhaus.abuse.ch/url/3911343/","GAYINT_DOT_ORG"
+"3911342","2026-09-02 10:02:03","http://112.239.122.120:56039/i","offline","","malware_download","None","https://urlhaus.abuse.ch/url/3911342/","cesnet_certs"

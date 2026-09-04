@@ -1,0 +1,130 @@
+# 1. {{ campaign.code }} — {{ campaign.display_name or campaign.code }}
+
+- **Date:** {{ generated_at.date().isoformat() if generated_at else "unknown" }}
+- **Analyst:** {{ analyst or "unknown" }}
+- **TLP:** {{ tlp }}
+- **Overall confidence:** {{ overall_confidence }}
+
+---
+
+## 2. Key Judgements
+
+{% for kj in draft.key_judgements %}
+- **[{{ kj.confidence | upper }}]** {{ kj.statement }}
+{% endfor %}
+
+## 3. Summary
+
+{{ draft.summary }}
+
+## 4. Targeting
+
+- **Victim profile:** {{ draft.targeting.victim_profile }}
+- **Geographies:** {{ draft.targeting.geographies | join(", ") if draft.targeting.geographies else "none specified" }}
+- **Impersonated brands:** {{ draft.targeting.impersonated_brands | join(", ") if draft.targeting.impersonated_brands else "none specified" }}
+
+## 5. Tradecraft (MITRE ATT&CK)
+
+{% if draft.ttps %}
+| Technique | Name | Observation |
+|---|---|---|
+{% for ttp in draft.ttps %}
+| {{ ttp.technique_id }} | {{ ttp.technique_name }} | {{ ttp.observation }} |
+{% endfor %}
+{% else %}
+No ATT&CK techniques were identified for this campaign.
+{% endif %}
+
+## 6. Infrastructure
+
+| Type | Value | Detail |
+|---|---|---|
+{% for row in infrastructure_rows %}
+| {{ row.type }} | {{ row.value }} | {{ row.detail }} |
+{% endfor %}
+
+{% if graph_png_filename %}
+![Campaign graph]({{ graph_png_filename }})
+{% else %}
+Graphviz (`dot`) was not available when this report was rendered, so the
+campaign graph is given below as DOT source instead of a rendered image —
+render it with `lh cluster graph {{ campaign.code }} --format dot | dot -Tpng`.
+
+```dot
+{{ graph_dot }}
+```
+{% endif %}
+
+## 7. Financial Analysis
+
+{{ draft.financial.narrative }}
+
+- **Total observed inflow:** {{ draft.financial.total_observed_inflow }}
+- **Cashout venues:** {{ draft.financial.cashout_venues | join(", ") if draft.financial.cashout_venues else "none identified" }}
+- **Sanctions exposure:** {{ draft.financial.sanctions_exposure }}
+
+{% if traces %}
+| Root member | Depth | Truncated | Total traced value |
+|---|---|---|---|
+{% for trace in traces %}
+| {{ trace.member_ref }} | {{ trace.depth }} | {{ "**Yes**" if trace.truncated else "No" }} | {{ trace.summary.get("total_traced_value", "-") }} |
+{% endfor %}
+{% else %}
+No fund-flow traces are on record for this campaign's members.
+{% endif %}
+
+## 8. Assessment
+
+{{ draft.assessment }}
+
+## 9. Outlook
+
+{{ draft.outlook }}
+
+{% if draft.gaps %}
+**Gaps:**
+
+{% for gap in draft.gaps %}
+- {{ gap }}
+{% endfor %}
+{% endif %}
+
+## 10. Indicators of Compromise
+
+| Type | Value (defanged) | First seen | Last seen |
+|---|---|---|---|
+{% for ioc in iocs %}
+| {{ ioc.type }} | {{ ioc.value }} | {{ ioc.first_seen }} | {{ ioc.last_seen }} |
+{% endfor %}
+
+{% if stix_bundle_filename %}
+Machine-readable indicators: [STIX 2.1 bundle]({{ stix_bundle_filename }}).
+{% endif %}
+
+## 11. Sources & Reliability
+
+| Source | Admiralty reliability grade |
+|---|---|
+{% for source in sources %}
+| {{ source.source_name }} | {{ source.reliability_grade }} |
+{% endfor %}
+
+## 12. Methodology & Limitations
+
+- **Relations that linked this campaign:** {{ relation_types | join(", ") if relation_types else "none recorded" }}
+- **Fund-flow trace depth(s) used:** {{ traces | map(attribute="depth") | unique | list | join(", ") if traces else "no traces on record" }}
+- **Providers that served this campaign's enrichment data:** {{ providers | join(", ") if providers else "none recorded" }}
+- **Partial or truncated results:**
+{% if partial_or_truncated_notes %}
+{% for note in partial_or_truncated_notes %}
+  - {{ note }}
+{% endfor %}
+{% else %}
+  - None. All enrichment and trace data behind this report completed without truncation or a known provider failure.
+{% endif %}
+
+This report was generated from Ledgerhound's evidence pack (sha256
+`{{ evidence_hash }}`) for assessment version {{ assessment.version }},
+drafted by `{{ assessment.model }}` using prompt version
+`{{ assessment.prompt_version }}`, approved by {{ analyst or "unknown" }}
+on {{ generated_at.isoformat() if generated_at else "unknown" }}.

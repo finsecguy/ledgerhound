@@ -1,0 +1,38 @@
+# Clustering thresholds and relation weights for `lh cluster run`.
+#
+# These are the milestone spec's defaults; this file exists so they're
+# tunable without a code change, same as config/providers.yaml.
+weights:
+  shares_receiving_wallet: 1.0
+  shares_cashout_path: 0.8
+  shares_cert: 0.6
+  shares_template: 0.5
+  # Corroboration only — see campaign.score_threshold and the scoring
+  # rule that a registrar/NS-only component always scores 0.
+  shares_registrar_and_ns: 0.2
+
+cert:
+  # A cert with more SANs than this is treated as shared hosting/CDN
+  # wildcard infrastructure, not a meaningful link.
+  wildcard_san_threshold: 20
+  wildcard_weight: 0.1
+  # Both domains must have been live within this many days of each other.
+  liveness_window_days: 90
+
+template:
+  liveness_window_days: 90
+
+campaign:
+  score_threshold: 0.5
+  # Added to a component's score when it's corroborated by more than one
+  # relation type.
+  diversity_bonus: 0.2
+  min_size: 2
+  # Jaccard overlap at or above this, between an existing campaign's
+  # members and a newly computed component, counts as "the same
+  # campaign" for stable-identity matching across runs. Inclusive: two
+  # equal-sized campaigns merging fully lands exactly on 0.5.
+  merge_split_jaccard_threshold: 0.5
+  # A campaign is "active" if any member indicator was observed within
+  # this many days; otherwise "dormant".
+  active_window_days: 30

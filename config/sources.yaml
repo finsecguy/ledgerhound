@@ -1,0 +1,24 @@
+# Source registry consumed by `lh collect`.
+#
+# `name` must match a Collector implementation registered in
+# ledgerhound.collect.REGISTRY (see ledgerhound/collect/__init__.py).
+# `url` is the canonical reference for the feed (documentation / provenance);
+# the concrete fetch endpoint(s) are owned by the collector implementation.
+# `reliability_grade` follows the NATO/Admiralty source-reliability scale
+# (A = completely reliable ... F = reliability cannot be judged). These feeds
+# are automated, unvetted, community-maintained blocklists, so none of them
+# earn better than "usually reliable" (B) out of the box.
+sources:
+  - name: scamsniffer
+    type: phishing_feed
+    url: https://github.com/scamsniffer/scam-database
+    cadence_minutes: 60
+    reliability_grade: B
+    enabled: true
+
+  - name: urlhaus
+    type: phishing_feed
+    url: https://urlhaus.abuse.ch/
+    cadence_minutes: 15
+    reliability_grade: B
+    enabled: true

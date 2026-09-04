@@ -1,0 +1,33 @@
+{
+  "objectClassName": "domain",
+  "ldhName": "EXAMPLE-CORP.EXAMPLE",
+  "status": ["client transfer prohibited", "client update prohibited"],
+  "entities": [
+    {
+      "objectClassName": "entity",
+      "roles": ["registrar"],
+      "vcardArray": ["vcard", [["version", {}, "text", "4.0"], ["fn", {}, "text", "Example Registrar Inc"]]]
+    },
+    {
+      "objectClassName": "entity",
+      "roles": ["registrant"],
+      "vcardArray": [
+        "vcard",
+        [
+          ["version", {}, "text", "4.0"],
+          ["fn", {}, "text", "Example Business Registrant"],
+          ["adr", {}, "text", ["", "", "1 Example Street", "Example City", "", "10000", "US"]]
+        ]
+      ]
+    }
+  ],
+  "nameservers": [
+    {"objectClassName": "nameserver", "ldhName": "ns1.example-corp.example"},
+    {"objectClassName": "nameserver", "ldhName": "ns2.example-corp.example"}
+  ],
+  "events": [
+    {"eventAction": "registration", "eventDate": "2018-03-14T00:00:00Z"},
+    {"eventAction": "last changed", "eventDate": "2026-06-01T12:30:00Z"},
+    {"eventAction": "expiration", "eventDate": "2028-03-14T00:00:00Z"}
+  ]
+}

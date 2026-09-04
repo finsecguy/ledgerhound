@@ -1,0 +1,92 @@
+# Per-provider rate limits and freshness windows for `lh enrich`.
+#
+# These are conservative defaults for public, keyless endpoints — tune
+# them if you configure an API key that raises a provider's real limit
+# (e.g. Etherscan). Providers fall back to the defaults baked into their
+# class if a name here doesn't match, so this file is optional tuning,
+# not required configuration.
+providers:
+  # --- BTC ---
+  mempool_space:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  blockstream:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  # --- ETH ---
+  blockscout_eth:
+    max_requests: 8
+    per_seconds: 10
+    ttl_hours: 6
+
+  publicnode_eth:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  # --- TRON ---
+  trongrid:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  tronscan:
+    max_requests: 5
+    per_seconds: 10
+    ttl_hours: 6
+
+  # --- SOL ---
+  solana_rpc:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  publicnode_sol:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6
+
+  # --- Domain infra ---
+  dns_resolver:
+    max_requests: 20
+    per_seconds: 10
+    ttl_hours: 12
+
+  cloudflare_doh:
+    max_requests: 20
+    per_seconds: 10
+    ttl_hours: 12
+
+  rdap_iana:
+    max_requests: 5
+    per_seconds: 10
+    ttl_hours: 48
+
+  rdap_org:
+    max_requests: 5
+    per_seconds: 10
+    ttl_hours: 48
+
+  whois:
+    # Fallback of last resort (used when a TLD has no RDAP deployment, or
+    # every RDAP provider fails) — several registries' WHOIS servers are
+    # noticeably stricter about query volume than the RDAP ecosystem.
+    max_requests: 5
+    per_seconds: 10
+    ttl_hours: 48
+
+  crtsh:
+    # crt.sh is a shared community resource, notoriously easy to overload —
+    # keep this low regardless of how generous other limits look.
+    max_requests: 2
+    per_seconds: 10
+    ttl_hours: 24
+
+  http_fingerprint:
+    max_requests: 10
+    per_seconds: 10
+    ttl_hours: 6

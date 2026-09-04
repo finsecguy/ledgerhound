@@ -1,0 +1,5 @@
+{
+  "errorCode": 404,
+  "title": "Not Found",
+  "description": ["No matching records were found in the registry."]
+}

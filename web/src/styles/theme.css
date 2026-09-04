@@ -1,0 +1,569 @@
+/* Ledgerhound dashboard theme: a case-file register, not a SaaS admin
+   template. Warm ink-and-parchment palette (not the default dark-navy-
+   plus-cyan), a serif register for structural headings, monospace
+   reserved strictly for literal data an analyst would copy verbatim
+   (addresses, hashes, technique ids, campaign codes). Confidence is
+   rendered as visual weight (see .confidence below), never a status
+   color — see README "Dashboard" for the reasoning. */
+
+:root {
+  --ink: #161310;
+  --ink-raised: #1c1811;
+  --surface: #201c17;
+  --surface-hover: #2a251d;
+  --line: #362f24;
+  --line-strong: #4a4030;
+
+  --paper: #e7e1d3;
+  --paper-muted: #a89d87;
+  --paper-dim: #8a7d63;
+
+  --redact: #b8763a;
+  --redact-strong: #c78a3d;
+  --redact-dim: rgba(184, 118, 58, 0.14);
+
+  --status-active: #7fae6a;
+  --status-dormant: #6b6152;
+
+  --flag: #d65e51;
+  --flag-dim: rgba(214, 94, 81, 0.14);
+  --warning: #cf9a4a;
+  --warning-dim: rgba(207, 154, 74, 0.14);
+  --success: #7fae6a;
+  --success-dim: rgba(127, 174, 106, 0.14);
+
+  --font-sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-mono: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+
+  --radius: 4px;
+  --radius-sm: 3px;
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: var(--redact);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  margin: 0 0 0.5em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--redact);
+  outline-offset: 2px;
+}
+
+/* --- App shell --- */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .app-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+  .app-main {
+    padding: 16px;
+  }
+}
+
+.app-nav {
+  background: var(--ink-raised);
+  border-right: 1px solid var(--line);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-nav__brand {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--paper);
+  margin-bottom: 20px;
+}
+.app-nav__brand span {
+  color: var(--redact);
+}
+
+.app-nav a {
+  color: var(--paper-muted);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.app-nav a:hover {
+  background: var(--surface-hover);
+  color: var(--paper);
+  text-decoration: none;
+}
+.app-nav a.active {
+  background: var(--redact-dim);
+  color: var(--redact-strong);
+}
+
+.app-main {
+  padding: 28px 36px;
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* --- Layout primitives --- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.row--between {
+  justify-content: space-between;
+}
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.card--link {
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.card--link:hover {
+  border-color: var(--line-strong);
+}
+
+/* A flowing document section — used where content is read like prose
+   (an assessment's narrative fields), not boxed like a functional
+   panel. A rule below, not a border all around: the point is that not
+   every piece of content deserves identical structural weight. */
+.doc-section {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.doc-section:last-child {
+  border-bottom: none;
+}
+.doc-section h3 {
+  font-size: 15px;
+  margin-bottom: 0.4em;
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.page-subtitle {
+  color: var(--paper-muted);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* A single dominant figure — used once per page, at most, for the one
+   number that matters most (e.g. Overview's total indicator count).
+   Not a grid of equally-weighted stat-cards. */
+.lead-metric__value {
+  font-family: var(--font-serif);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1;
+}
+.lead-metric__label {
+  color: var(--paper-muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* --- Table --- */
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.data-table th {
+  text-align: left;
+  color: var(--paper-muted);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.data-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.data-table tr:hover td {
+  background: var(--surface-hover);
+}
+.data-table tr.clickable {
+  cursor: pointer;
+}
+
+/* --- Confidence: visual weight, not a status color --- */
+/* Low/moderate/high confidence is an epistemic gradient, not a discrete
+   state, so it deliberately does NOT share the .badge pill treatment
+   used for actual statuses (approved/rejected/active/...) below. Weight
+   is carried by opacity + a small filled/hollow diamond glyph set, all
+   in the same ink color. */
+
+.confidence {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+}
+.confidence__glyphs {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.confidence__label {
+  text-transform: lowercase;
+}
+.confidence--high .confidence__label {
+  font-weight: 700;
+  color: var(--paper);
+}
+.confidence--high .confidence__glyphs {
+  color: var(--paper);
+}
+.confidence--moderate .confidence__label {
+  font-weight: 500;
+  color: var(--paper-muted);
+}
+.confidence--moderate .confidence__glyphs {
+  color: var(--paper-muted);
+}
+.confidence--low .confidence__label,
+.confidence--unattributed .confidence__label {
+  font-weight: 400;
+  color: var(--paper-dim);
+}
+.confidence--low .confidence__glyphs,
+.confidence--unattributed .confidence__glyphs {
+  color: var(--paper-dim);
+}
+
+/* --- Badges (discrete states only: status, review status) --- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.badge--active {
+  background: var(--success-dim);
+  color: var(--status-active);
+}
+.badge--dormant {
+  background: rgba(107, 97, 82, 0.2);
+  color: var(--status-dormant);
+}
+.badge--draft {
+  background: rgba(168, 157, 135, 0.15);
+  color: var(--paper-muted);
+}
+.badge--in_review {
+  background: var(--warning-dim);
+  color: var(--warning);
+}
+.badge--approved {
+  background: var(--success-dim);
+  color: var(--success);
+}
+.badge--rejected {
+  background: var(--flag-dim);
+  color: var(--flag);
+}
+.badge--stale {
+  background: var(--flag-dim);
+  color: var(--flag);
+}
+
+/* --- Forms --- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field label {
+  font-size: 12px;
+  color: var(--paper-muted);
+  font-weight: 500;
+}
+.field .field-error {
+  color: var(--flag);
+  font-size: 12px;
+}
+
+input[type="text"],
+input[type="search"],
+input[type="number"],
+select,
+textarea {
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 13px;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--redact);
+}
+input.has-error,
+textarea.has-error {
+  border-color: var(--flag);
+}
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: var(--ink-raised);
+  color: var(--paper);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+button:hover {
+  background: var(--surface-hover);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+button.primary {
+  background: var(--redact-strong);
+  border-color: var(--redact-strong);
+  color: #241608;
+}
+button.primary:hover {
+  background: var(--redact);
+}
+button.danger {
+  background: transparent;
+  border-color: var(--flag);
+  color: var(--flag);
+}
+button.danger:hover {
+  background: var(--flag-dim);
+}
+button.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--paper-muted);
+}
+button.ghost:hover {
+  background: var(--surface-hover);
+  color: var(--paper);
+}
+
+/* --- Misc --- */
+
+.callout {
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13px;
+}
+.callout--warning {
+  background: var(--warning-dim);
+  border: 1px solid rgba(207, 154, 74, 0.35);
+  color: var(--warning);
+}
+.callout--danger {
+  background: var(--flag-dim);
+  border: 1px solid rgba(214, 94, 81, 0.35);
+  color: var(--flag);
+}
+.callout--info {
+  background: var(--redact-dim);
+  border: 1px solid rgba(184, 118, 58, 0.3);
+  color: var(--paper);
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.stat-card__value {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.stat-card__label {
+  color: var(--paper-muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.diff-add {
+  background: rgba(127, 174, 106, 0.15);
+  color: var(--success);
+}
+.diff-remove {
+  background: rgba(214, 94, 81, 0.15);
+  color: var(--flag);
+}
+
+/* --- Entity graph: the product's hero artifact --- */
+/* Deliberately borderless/unboxed — everything else on the campaign
+   detail page is visually quieter than this by construction. */
+.hero-graph {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+}
+.hero-graph h3 {
+  font-size: 15px;
+  color: var(--paper-muted);
+  margin-bottom: 10px;
+}
+.entity-graph {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Evidence: a docked side panel, not a card of equal weight to the
+   graph it explains — a thin rule instead of a full border. */
+.evidence-dock {
+  border-left: 1px solid var(--line);
+  padding-left: 16px;
+}
+.evidence-dock__empty {
+  color: var(--paper-dim);
+  font-size: 13px;
+}
+
+/* --- Review action bar --- */
+/* A heavier rule + a sentence of consequence ahead of an irreversible
+   action (approve/reject) — not a blocking modal, just enough weight
+   that it doesn't feel like a plain form submit. */
+.review-bar {
+  border-top: 2px solid var(--line-strong);
+  padding-top: 16px;
+  margin-top: 4px;
+}
+.review-bar__consequence {
+  color: var(--paper-muted);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  font-family: var(--font-serif);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin-top: 1.4em;
+}
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 13px;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  text-align: left;
+}
+.markdown-body code {
+  background: var(--ink-raised);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.markdown-body pre {
+  background: var(--ink-raised);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
