@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "Crypto-scam campaign intelligence pipeline: collection, extraction, enrichment, clustering, and reporting."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "Proprietary" }
-authors = [{ name = "Ledgerhound" }]
+license = { text = "MIT" }
+authors = [{ name = "Herman K." }]
 
 dependencies = [
     "sqlalchemy>=2.0.35",
