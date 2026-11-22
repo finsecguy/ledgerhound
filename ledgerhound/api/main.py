@@ -29,6 +29,34 @@ DEV_CORS_ORIGINS = [
 ]
 
 
+def _resolve_static_file(root: Path, relative_path: str) -> Path | None:
+    """Return `relative_path` as a regular file inside `root`, or None.
+
+    Joining the request path onto the static root is not enough. An absolute
+    path discards the root (`root / "/etc/passwd"` is `/etc/passwd`), `..`
+    segments walk out of it, and a symlink inside the tree can point at a
+    file outside it. Resolve the candidate (following symlinks) and accept
+    it only when that real path is still a file inside the real static root.
+    """
+    if not relative_path or "\x00" in relative_path:
+        return None
+    # URL paths use `/`. Fold backslashes in so `..\\..` is contained the
+    # same way `../..` is, including on Windows.
+    normalized = relative_path.replace("\\", "/")
+    if normalized.startswith("/") or Path(normalized).is_absolute():
+        return None
+    root_resolved = root.resolve()
+    try:
+        candidate = (root_resolved / normalized).resolve()
+    except (OSError, RuntimeError, ValueError):
+        return None
+    if not candidate.is_relative_to(root_resolved) or candidate == root_resolved:
+        return None
+    if not candidate.is_file():
+        return None
+    return candidate
+
+
 def create_app() -> FastAPI:
     """Build the FastAPI app. If `web/dist/` exists (a completed `npm run
     build`), it's served from this same process in prod; in dev, that
@@ -60,26 +88,29 @@ def create_app() -> FastAPI:
             app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="web-assets")
 
         # A plain StaticFiles(html=True) mount only auto-serves
-        # index.html for "/" and directory-like paths — a client-side
+        # index.html for "/" and directory-like paths. A client-side
         # route like /campaigns/LH-2026-001 doesn't correspond to a real
         # file, so a direct visit or refresh 404s. This catch-all (routed
         # last, so every /api/... route above still wins its own match)
         # serves the real file when one exists (favicon, etc.) and falls
         # back to index.html otherwise, letting React Router take over.
+        # The file must resolve to a path inside the dist root: encoded
+        # `..` segments and symlinks are otherwise able to read files
+        # outside it.
         @app.get("/{full_path:path}", include_in_schema=False)
         async def spa_fallback(full_path: str) -> FileResponse:
             # An unmatched /api/... path is a real 404 (a typo'd or
-            # removed endpoint), not a client-side route — falling back
+            # removed endpoint), not a client-side route. Falling back
             # to index.html here would silently turn a broken API call
             # into a confusing 200 of the SPA shell instead of a clear
             # error.
             if full_path.startswith("api/"):
                 raise HTTPException(status_code=404, detail=f"No such API route: /{full_path}")
-            candidate = WEB_DIST_DIR / full_path
-            if full_path and candidate.is_file():
-                return FileResponse(candidate)
-            index_path = WEB_DIST_DIR / "index.html"
-            if not index_path.is_file():
+            static_file = _resolve_static_file(WEB_DIST_DIR, full_path)
+            if static_file is not None:
+                return FileResponse(static_file)
+            index_path = _resolve_static_file(WEB_DIST_DIR, "index.html")
+            if index_path is None:
                 raise HTTPException(status_code=404, detail="Not found")
             return FileResponse(index_path)
 

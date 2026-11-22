@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Iterable
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
@@ -34,7 +35,7 @@ _CASHOUT_TERMINAL_REASONS = {"exchange", "mixer", "bridge", "sanctioned"}
 def _latest_trace_per_root(session: Session) -> dict[UUID, UUID]:
     """root_indicator_id -> its most recent trace_id (an indicator may
     have been traced more than once over time)."""
-    latest: dict[UUID, tuple[UUID, object]] = {}
+    latest: dict[UUID, tuple[UUID, datetime]] = {}
     for trace_id, root_id, run_at in session.execute(
         select(Trace.id, Trace.root_indicator_id, Trace.run_at)
     ):
