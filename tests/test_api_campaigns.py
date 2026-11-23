@@ -1,5 +1,5 @@
 """Campaigns and graph endpoints: list/detail shapes, filtering/search,
-display-name rename, and the graph/explain endpoints — all presentational
+display-name rename, and the graph/explain endpoints, all presentational
 reads over data seeded directly via `db_session`."""
 
 from __future__ import annotations
@@ -228,3 +228,4 @@ def test_explain_404_for_indicator_not_in_campaign(
 
     response = api_client.get(f"/api/campaigns/LH-2026-001/explain/{outsider.id}")
     assert response.status_code == 404
+

@@ -9,7 +9,7 @@ from ledgerhound.cluster.relations.registrar_ns import SharesRegistrarAndNsRelat
 from ledgerhound.cluster.relations.template import SharesTemplateRelation
 from ledgerhound.cluster.relations.wallet import SharesReceivingWalletRelation
 
-#: Order matters only for readability of `lh cluster run` output — edge
+#: Order matters only for readability of `lh cluster run` output. Edge
 #: sync/graph-building/scoring are all order-independent by construction.
 ALL_RELATIONS: dict[str, type[Relation]] = {
     relation_cls.name: relation_cls
@@ -29,3 +29,4 @@ __all__ = [
     "Relation",
     "load_label_index",
 ]
+

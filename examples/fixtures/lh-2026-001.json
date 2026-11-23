@@ -1,0 +1,21 @@
+{
+  "label": "SANITISED EXAMPLE",
+  "shared_outbound_wallet": "0x2222222222222222222222222222222222222222",
+  "reports": [
+    {
+      "address": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      "total_received": "1000000000000000000",
+      "text": "SANITISED EXAMPLE. Fake support page https://wallet-support.example/restore asks the reader to connect 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Contact @sanitised_example_bot. Not a real incident."
+    },
+    {
+      "address": "0x1111111111111111111111111111111111111111",
+      "total_received": "2000000000000000000",
+      "text": "SANITISED EXAMPLE. A second lure on https://claim-drop.example/start requests 0x1111111111111111111111111111111111111111. Not a real incident."
+    },
+    {
+      "address": "0x3333333333333333333333333333333333333333",
+      "total_received": "3000000000000000000",
+      "text": "SANITISED EXAMPLE. A third lure at https://restore-login.example/help requests 0x3333333333333333333333333333333333333333. Not a real incident."
+    }
+  ]
+}

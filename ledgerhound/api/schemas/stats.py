@@ -1,5 +1,5 @@
 """Response models for `/api/stats`, mirroring `ledgerhound.stats.StatsResult`
-field-for-field — the API never recomputes these numbers, only shapes
+field-for-field, the API never recomputes these numbers, only shapes
 `compute_stats`'s output as JSON."""
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ class StatsOut(BaseModel):
 
 
 class CampaignActivityOut(BaseModel):
-    """Recent campaign activity for the overview page — the same fields
+    """Recent campaign activity for the overview page, the same fields
     `CampaignSummary` carries, so the frontend can reuse one campaign-card
     component for both the overview and list pages."""
 
@@ -55,3 +55,4 @@ class CampaignActivityOut(BaseModel):
 class OverviewOut(BaseModel):
     stats: StatsOut
     recent_campaigns: list[CampaignActivityOut]
+

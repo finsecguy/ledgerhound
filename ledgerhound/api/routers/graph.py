@@ -1,4 +1,4 @@
-"""Campaign entity graph and per-indicator explain — both built from
+"""Campaign entity graph and per-indicator explain, both built from
 existing business logic: `assess.evidence.build_evidence_pack` for the
 graph (it already has every member, edge, and label a campaign's graph
 needs) and `cluster.graph.explain_indicator` for the explain endpoint,
@@ -105,3 +105,4 @@ def explain(code: str, indicator_id: str, session: Session = Depends(get_session
         direct_edges=direct_edges_out,
         path_to_reference=path_out,
     )
+

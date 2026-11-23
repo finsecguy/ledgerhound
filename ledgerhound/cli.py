@@ -184,7 +184,7 @@ def _build_registry(client: httpx.AsyncClient, settings: Settings) -> ProviderRe
     """Wire up every concrete provider into its facet's fallback chain.
 
     This is the one place all of `enrich/chain/*` and `enrich/infra/*` get
-    instantiated — `enrich/registry.py` itself only knows about the
+    instantiated. `enrich/registry.py` itself only knows about the
     `Provider` abstraction, not any specific implementation, so it can't
     (and shouldn't) do this wiring.
     """
@@ -471,7 +471,7 @@ _INDICATOR_TYPE_BY_CHAIN: dict[Chain, IndicatorType] = {
 def _persist_trace_result(session: Session, indicator_id: UUID, result: TraceResult) -> None:
     """Persist a trace run to `traces`/`trace_nodes`/`trace_edges`.
 
-    Milestone 2 computed all of this in memory purely to print it —
+    Milestone 2 computed all of this in memory purely to print it
     `cluster.relations.cashout`'s `shares_cashout_path` detector needs it
     on disk (two different indicators reaching the same labeled terminal
     node), so every trace against a tracked indicator is now persisted,
@@ -537,7 +537,7 @@ def trace(
 
     If `address` is a tracked indicator, the run is persisted (traces,
     trace_nodes, trace_edges) so `lh cluster run` can later detect shared
-    cashout paths across different indicators — not just printed.
+    cashout paths across different indicators, not just printed.
     """
     if output_format not in ("json", "table", "dot"):
         raise typer.BadParameter("--format must be one of: json, table, dot")
@@ -603,7 +603,7 @@ def providers_cmd() -> None:
     """Show configured providers, their facets, and current health.
 
     Health is tracked in-memory for the life of a single command
-    invocation, so a standalone run always shows every provider healthy —
+    invocation, so a standalone run always shows every provider healthy
     this is most useful immediately after (or piped alongside) `lh enrich`
     in a long-lived process, not as a persisted historical record.
     """
@@ -802,7 +802,7 @@ def cluster_show(
         }
 
         console.print(
-            f"[bold]{campaign.code}[/bold] ({campaign.display_name or 'unnamed'}) — "
+            f"[bold]{campaign.code}[/bold] ({campaign.display_name or 'unnamed'}). "
             f"{campaign.status}, score={campaign.score:.2f}"
         )
         console.print(f"Relations: {', '.join(campaign.relation_types)}")
@@ -977,7 +977,7 @@ def cluster_graph_cmd(
                     )
                 ],
             }
-            # Plain print, not console.print — see the same note on `lh
+            # Plain print, not console.print. See the same note on `lh
             # trace --format json`: this is for piping, not a terminal.
             print(json.dumps(payload, indent=2, default=str))
         else:
@@ -1069,7 +1069,7 @@ def assess_show(
 
         stale_tag = "[yellow](stale)[/yellow] " if assessment.stale else ""
         console.print(
-            f"[bold]{campaign_id}[/bold] v{assessment.version} — status={assessment.status} "
+            f"[bold]{campaign_id}[/bold] v{assessment.version}. Status={assessment.status} "
             f"{stale_tag}model={assessment.model} prompt={assessment.prompt_version} "
             f"edited_by_human={assessment.edited_by_human}"
         )
@@ -1115,7 +1115,7 @@ def assess_show(
 
         attribution = draft["attribution"]
         console.print(
-            f"[bold]Attribution:[/bold] claim={attribution['claim'] or '(none — unattributed)'} "
+            f"[bold]Attribution:[/bold] claim={attribution['claim'] or '(none. Unattributed)'} "
             f"confidence={attribution['confidence'] or '-'}\nRationale: {attribution['rationale']}"
         )
         console.print(f"[bold]Outlook:[/bold] {draft['outlook']}")
@@ -1269,7 +1269,7 @@ def assess_diff(
             raise typer.BadParameter(str(exc)) from exc
         diff_text = render_diff(assessment_a, assessment_b)
 
-    # Plain print, not console.print — see the same note on `lh trace
+    # Plain print, not console.print. See the same note on `lh trace
     # --format json`: a diff is for reading/piping, not rich styling.
     print(diff_text or "(no differences)")
 
@@ -1561,7 +1561,7 @@ def config_show(
     ),
 ) -> None:
     """Show a config domain's effective value (its override, if one has
-    been set via `lh config set` or the dashboard's Settings page —
+    been set via `lh config set` or the dashboard's Settings page
     otherwise its file/env default) and which one it's using."""
     domains = [_check_domain(domain)] if domain else list(config_store.DOMAINS)
     with session_scope() as session:
@@ -1590,7 +1590,7 @@ def config_set(
 
     `runtime` supports one field at a time: `lh config set runtime
     llm_model gpt-4o`. `sources`/`providers`/`clustering` are structured
-    documents — replace the whole thing with `--json`/`--file` (fetch the
+    documents. Replace the whole thing with `--json`/`--file` (fetch the
     current value from `lh config show DOMAIN` to edit and resubmit), or
     use the dashboard's Settings page, which edits this exact same store.
     """
@@ -1606,7 +1606,7 @@ def config_set(
         else:
             if checked_domain != "runtime":
                 raise typer.BadParameter(
-                    f"{domain!r} is a structured document — use --json or --file to replace it "
+                    f"{domain!r} is a structured document. Use --json or --file to replace it "
                     "(or edit it from the dashboard's Settings page)."
                 )
             if key is None or value is None:
@@ -1657,7 +1657,7 @@ def serve(
 
     If `web/dist/` exists (from `npm run build`), it's served from this
     same process at `/` and the dashboard is a single process. In dev,
-    run `npm run dev` in `web/` alongside `lh serve --reload` instead —
+    run `npm run dev` in `web/` alongside `lh serve --reload` instead
     Vite's dev server proxies API requests here (see web/vite.config.ts).
     """
     import uvicorn
@@ -1671,3 +1671,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

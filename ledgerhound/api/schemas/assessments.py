@@ -1,8 +1,8 @@
 """Response/request models for the assessment review workflow.
 
 `draft`/`draft_a`/`draft_b` below are typed as `assess.drafter.
-AssessmentDraft` — the exact same pydantic model `assess/drafter.py` and
-`assess/review.py` validate against — rather than a hand-duplicated
+AssessmentDraft`, the exact same pydantic model `assess/drafter.py` and
+`assess/review.py` validate against, rather than a hand-duplicated
 shape. `openapi-typescript` generates the frontend's TypeScript type
 from this same model via FastAPI's OpenAPI schema, so the dashboard's
 form and the CLI's validation can never quietly drift apart.
@@ -42,7 +42,7 @@ class AssessmentOut(BaseModel):
     reviewer_notes: str | None
     draft: AssessmentDraft
     #: ref -> short human-readable description, from
-    #: `assess.evidence.describe_refs` — so the review UI never shows a
+    #: `assess.evidence.describe_refs`, so the review UI never shows a
     #: bare `member:<uuid>` string.
     evidence_ref_descriptions: dict[str, str]
 
@@ -82,3 +82,4 @@ class AttackTechniqueOut(BaseModel):
 class AttackTechniquesOut(BaseModel):
     version: str
     techniques: list[AttackTechniqueOut]
+

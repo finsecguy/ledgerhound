@@ -1,6 +1,6 @@
 """Report and IOC-feed endpoints: pure file reads against whatever `lh
 report render` / `lh export feed` already wrote to disk. No rendering
-happens here — this only surfaces artifacts milestone 5's export layer
+happens here. This only surfaces artifacts milestone 5's export layer
 already produced."""
 
 from __future__ import annotations
@@ -67,8 +67,8 @@ _FEED_MEDIA_TYPES = {".json": "application/json", ".csv": "text/csv", ".html": "
 
 @feed_router.get("/files/{filename}")
 def get_feed_file(filename: str) -> FileResponse:
-    """Serves one file from `<export_output_path>/feed/` — the per-
-    campaign JSON, the combined `iocs.json`/`iocs.csv`, or `index.html` —
+    """Serves one file from `<export_output_path>/feed/`, the per-
+    campaign JSON, the combined `iocs.json`/`iocs.csv`, or `index.html`
     exactly as `lh export feed` wrote it. Resolved from settings fresh on
     every request (not baked in at app startup), same as the PDF
     endpoint above, since the export directory is written well after the
@@ -81,3 +81,4 @@ def get_feed_file(filename: str) -> FileResponse:
         raise HTTPException(status_code=404, detail=f"No such feed file: {filename!r}")
     media_type = _FEED_MEDIA_TYPES.get(path.suffix, "application/octet-stream")
     return FileResponse(path, media_type=media_type, filename=filename)
+

@@ -21,7 +21,7 @@ function renderEvidenceValue(value: unknown): string {
 }
 
 /** Renders the structured evidence for a selected graph node or edge
- * readably — a labeled table of fields, never a raw JSON blob. */
+ * readably, a labeled table of fields, never a raw JSON blob. */
 export default function EvidencePanel({ selection, onClose }: EvidencePanelProps): React.JSX.Element {
   if (!selection) {
     return (
@@ -108,3 +108,4 @@ export default function EvidencePanel({ selection, onClose }: EvidencePanelProps
     </div>
   );
 }
+

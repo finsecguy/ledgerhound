@@ -1,6 +1,6 @@
 """HTTP response fingerprinting: what does this domain actually serve?
 
-Not really a "provider" in the multi-source sense — there's only one
+Not really a "provider" in the multi-source sense. There's only one
 source for "what does this website respond with," which is the website
 itself. A connection failure, TLS error, or non-2xx status is a valid
 *result*, not an exception to bubble up: a scam domain going dark, or a
@@ -18,6 +18,7 @@ from datetime import UTC, datetime, timedelta
 import httpx
 from pydantic import BaseModel
 
+from ledgerhound.assess.untrusted import neutralize_untrusted_text
 from ledgerhound.db.models import IndicatorType
 from ledgerhound.enrich.base import EnrichmentTarget, Provider, ProviderResult, RateLimit
 
@@ -31,7 +32,7 @@ class HttpFingerprint(BaseModel):
     title: str | None = None
     body_hash: str | None = None
     favicon_hash: str | None = None
-    #: e.g. "connection_error", "timeout", "tls_error" — populated only
+    #: e.g. "connection_error", "timeout", "tls_error". Populated only
     #: when `reachable` is False, for why, not treated as a failure.
     unreachable_reason: str | None = None
 
@@ -66,11 +67,14 @@ class HttpFingerprintProvider(Provider):
 
             body = response.content
             title_match = _TITLE_RE.search(body)
-            title = (
+            raw_title = (
                 title_match.group(1).decode("utf-8", errors="replace").strip()
                 if title_match
-                else None
+                else ""
             )
+            # Titles are attacker-controlled. Strip instruction-shaped text
+            # before the fingerprint is stored.
+            title = neutralize_untrusted_text(raw_title)[:500] if raw_title else None
             favicon_hash = await self._favicon_hash(f"{scheme}://{domain}")
 
             fingerprint = HttpFingerprint(
@@ -108,3 +112,4 @@ class HttpFingerprintProvider(Provider):
         if response.status_code != 200 or not response.content:
             return None
         return hashlib.sha256(response.content).hexdigest()
+

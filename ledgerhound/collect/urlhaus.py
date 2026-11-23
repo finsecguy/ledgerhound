@@ -3,7 +3,7 @@
 The feed is CSV wrapped in a `#`-prefixed comment header block (terms of
 use, last-updated timestamp, and the actual column header line). We parse
 the header line out of that comment block to get field names, then hand
-the data rows to `csv.reader` — never naive string splitting, since URL
+the data rows to `csv.reader`. Never naive string splitting, since URL
 and tag fields can themselves contain commas inside quotes.
 """
 
@@ -77,3 +77,4 @@ class URLhausCollector(Collector):
 
     def content_hash(self, record: dict[str, Any]) -> str:
         return self.stable_hash(record)
+

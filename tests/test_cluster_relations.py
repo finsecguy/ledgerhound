@@ -205,7 +205,7 @@ def test_cashout_relation_uses_only_the_latest_trace_per_root(db_session: Sessio
     )
     db_session.add_all([old_trace, new_trace, other_trace])
     db_session.flush()
-    # Only the OLD trace reached this terminal — it must be ignored now.
+    # Only the OLD trace reached this terminal. It must be ignored now.
     db_session.add(
         TraceNodeRow(
             trace_id=old_trace.id,
@@ -383,7 +383,7 @@ def test_registrar_ns_relation_skips_missing_data(db_session: Session) -> None:
     db_session.commit()
 
     edges = list(SharesRegistrarAndNsRelation(_config()).detect(db_session))
-    assert edges == []  # both missing registrar/NS — not a meaningful match
+    assert edges == []  # both missing registrar/NS, not a meaningful match
 
 
 # --- shares_template ---------------------------------------------------
@@ -420,3 +420,4 @@ def test_template_relation_notes_both_hashes_when_both_match(db_session: Session
 
     assert len(edges) == 1  # one edge, not two, when multiple hashes match the same pair
     assert edges[0].evidence["matched_hashes"] == ["body_hash", "favicon_hash"]
+

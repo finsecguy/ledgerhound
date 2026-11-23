@@ -4,7 +4,7 @@ crt.sh is the one facet here with a single provider rather than a
 fallback pair: it's the only free, comprehensive, queryable aggregator
 over the public CT logs. A second CT-log source would mean either paying
 for one or implementing the raw CT log protocol directly (fetching and
-verifying signed tree heads from each log operator) — out of scope for
+verifying signed tree heads from each log operator). Out of scope for
 what this facet needs. Domain enrichment as a whole still has redundancy
 across its four independent facets (DNS, RDAP, certs, HTTP); losing this
 one facet doesn't take down domain enrichment entirely.
@@ -107,3 +107,4 @@ class CrtShProvider(Provider):
             fetched_at=datetime.now(UTC),
             partial=False,
         )
+

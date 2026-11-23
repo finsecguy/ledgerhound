@@ -1,5 +1,5 @@
 """Config domain response shapes. `value` is deliberately `dict[str,
-Any]`, not a per-domain typed schema — the four domains have unrelated
+Any]`, not a per-domain typed schema, the four domains have unrelated
 shapes (a list for `sources`, nested weight groups for `clustering`,
 etc.), and `ledgerhound.config_store` already validates every write
 against that domain's real pydantic model before it's ever persisted, so
@@ -18,10 +18,11 @@ from ledgerhound.config_store import Domain
 class ConfigDomainOut(BaseModel):
     domain: Domain
     #: True once `lh config set` or this domain's PUT endpoint has ever
-    #: been used — otherwise `value` is that domain's file/env default.
+    #: been used. Otherwise `value` is that domain's file/env default.
     overridden: bool
     value: dict[str, Any]
 
 
 class ConfigListOut(BaseModel):
     domains: list[ConfigDomainOut]
+

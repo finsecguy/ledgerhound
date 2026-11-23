@@ -6,7 +6,7 @@ unhealthy provider is skipped automatically and retried after backing off.
 one kind of profile to fetch (balance/history/counterparties), so its
 fallback chain is naturally keyed by `IndicatorType`. A domain has *four*
 independent kinds of data (DNS, RDAP, certificates, HTTP fingerprint),
-each with its own provider(s) and its own normalized shape — they are not
+each with its own provider(s) and its own normalized shape. They are not
 alternatives for the same question, they're different questions. Modeling
 each as its own facet keeps `Provider.enrich()` returning exactly one
 normalized shape (per the base contract) while still letting a domain
@@ -116,7 +116,7 @@ class ProviderRegistry:
                 self._health.setdefault(provider.name, ProviderHealth())
         #: Optional per-provider-name token bucket, applied immediately
         #: before that provider is actually called (not before every
-        #: chain member — only the one that ends up serving the request
+        #: chain member, only the one that ends up serving the request
         #: consumes a token). Built and owned by the scheduler.
         self._rate_limiters = rate_limiters or {}
 
@@ -211,3 +211,4 @@ class ProviderRegistry:
             return result
 
         raise NoProviderAvailable(facet) from last_exc
+

@@ -1,6 +1,6 @@
 """Scheduler tests: token-bucket rate limiting (fake clock, no real sleep),
 work selection priority/staleness, exact Decimal persistence, and
-resumability — a run that fails partway through must not lose or
+resumability, a run that fails partway through must not lose or
 duplicate already-committed work."""
 
 from __future__ import annotations
@@ -198,7 +198,7 @@ async def test_resumability_interrupted_run_then_rerun_has_no_duplicates_or_loss
     db_session: Session,
 ) -> None:
     """Models a process killed partway through a batch (here, via
-    `limit=2` standing in for "only got through 2 of 3 before dying") —
+    `limit=2` standing in for "only got through 2 of 3 before dying")
     the interrupted run's progress must survive, and resuming must finish
     exactly the remainder without re-touching or duplicating what already
     committed."""
@@ -227,7 +227,7 @@ async def test_resumability_interrupted_run_then_rerun_has_no_duplicates_or_loss
     second_run = await run_enrichment(db_session, registry2)
 
     # Only the one indicator the interrupted run never reached is picked
-    # up — the other two are already fresh and must not be redone.
+    # up, the other two are already fresh and must not be redone.
     assert second_run.attempted == 1
     remaining_id = all_ids - set(profiles_after_first_run)
     remaining_value = next(
@@ -245,3 +245,4 @@ async def test_resumability_interrupted_run_then_rerun_has_no_duplicates_or_loss
             db_session.scalars(select(Enrichment).where(Enrichment.indicator_id == indicator_id))
         )
         assert len(enrichment_rows) == 1  # one successful attempt recorded, not two
+

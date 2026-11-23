@@ -1,0 +1,186 @@
+{
+  "id": "bundle--9622fbf8-c094-5ff5-a240-328f7ae15669",
+  "objects": [
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "description": "SANITISED EXAMPLE. This campaign is a portfolio fixture, not a real cluster. The lures use wallet-support.example, claim-drop.example, and restore-login.example.",
+      "first_seen": "2026-06-01T12:00:00Z",
+      "id": "campaign--71dc991e-4237-5738-8ce1-c717e8c45d22",
+      "last_seen": "2026-06-01T12:00:00Z",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "SANITISED EXAMPLE",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "spec_version": "2.1",
+      "type": "campaign"
+    },
+    {
+      "created": "2022-10-01T00:00:00.000Z",
+      "created_by_ref": "identity--b3bca3c2-1f3d-4b54-b44f-dac42c3a8f01",
+      "description": "This defines TLP 2.0 as a STIX extension",
+      "extension_types": [
+        "property-extension"
+      ],
+      "id": "extension-definition--60a3c5c5-0d10-413e-aab3-9e08dde9e88d",
+      "modified": "2022-10-01T00:00:00.000Z",
+      "name": "TLP 2.0",
+      "schema": "https://github.com/oasis-open/cti-stix-common-objects/tree/master/extension-definition-specifications/tlp-2.0",
+      "spec_version": "2.1",
+      "type": "extension-definition",
+      "version": "1.0.0"
+    },
+    {
+      "contact_information": "Author: Herman K. (finsecguy). Analyst: Herman K. (finsecguy)",
+      "created": "2026-06-01T12:00:00.000Z",
+      "description": "Crypto-scam campaign intelligence pipeline. Author: Herman K. (finsecguy).",
+      "id": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "identity_class": "organization",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "Ledgerhound",
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "description": "eth_address observed as part of campaign LH-2026-001",
+      "id": "indicator--7b40e447-37a4-586d-b42f-a06a934b5e09",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "pattern": "[x-crypto-address:value = '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF' AND x-crypto-address:chain = 'eth']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "spec_version": "2.1",
+      "type": "indicator",
+      "valid_from": "2026-06-01T12:00:00Z"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "description": "eth_address observed as part of campaign LH-2026-001",
+      "id": "indicator--9ad85ca5-f3f7-5058-980f-5bb84858fe5f",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "0x3333333333333333333333333333333333333333",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "pattern": "[x-crypto-address:value = '0x3333333333333333333333333333333333333333' AND x-crypto-address:chain = 'eth']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "spec_version": "2.1",
+      "type": "indicator",
+      "valid_from": "2026-06-01T12:00:01Z"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "description": "eth_address observed as part of campaign LH-2026-001",
+      "id": "indicator--da3dd62a-b17a-5a78-963f-9333e55c93dd",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "0x1111111111111111111111111111111111111111",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "pattern": "[x-crypto-address:value = '0x1111111111111111111111111111111111111111' AND x-crypto-address:chain = 'eth']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "spec_version": "2.1",
+      "type": "indicator",
+      "valid_from": "2026-06-01T12:00:02Z"
+    },
+    {
+      "created": "2022-10-01T00:00:00.000Z",
+      "extensions": {
+        "extension-definition--60a3c5c5-0d10-413e-aab3-9e08dde9e88d": {
+          "extension_type": "property-extension",
+          "tlp_2_0": "clear"
+        }
+      },
+      "id": "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
+      "name": "TLP:CLEAR",
+      "spec_version": "2.1",
+      "type": "marking-definition"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "id": "relationship--1011ba93-8417-5e5f-a511-64d73909be5e",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "relationship_type": "indicates",
+      "source_ref": "indicator--da3dd62a-b17a-5a78-963f-9333e55c93dd",
+      "spec_version": "2.1",
+      "target_ref": "campaign--71dc991e-4237-5738-8ce1-c717e8c45d22",
+      "type": "relationship"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "id": "relationship--6becc044-00a6-588c-9e51-af91ddcf7063",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "relationship_type": "indicates",
+      "source_ref": "indicator--9ad85ca5-f3f7-5058-980f-5bb84858fe5f",
+      "spec_version": "2.1",
+      "target_ref": "campaign--71dc991e-4237-5738-8ce1-c717e8c45d22",
+      "type": "relationship"
+    },
+    {
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "id": "relationship--a47300b1-4182-5049-b319-e9b145acbc65",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "relationship_type": "indicates",
+      "source_ref": "indicator--7b40e447-37a4-586d-b42f-a06a934b5e09",
+      "spec_version": "2.1",
+      "target_ref": "campaign--71dc991e-4237-5738-8ce1-c717e8c45d22",
+      "type": "relationship"
+    },
+    {
+      "confidence": 50,
+      "created": "2026-06-01T12:00:00.000Z",
+      "created_by_ref": "identity--81b9f382-3022-59c2-a7df-8e12c6164f8c",
+      "description": "SANITISED EXAMPLE. The addresses are linked only because the fixture gave them the same outbound counterparty.",
+      "id": "report--53c45ddf-f350-5726-941a-412cf7ab8e5c",
+      "modified": "2026-06-01T12:00:00.000Z",
+      "name": "LH-2026-001: SANITISED EXAMPLE. This campaign is a portfolio fixture, not a real cluster. The",
+      "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+      ],
+      "object_refs": [
+        "campaign--71dc991e-4237-5738-8ce1-c717e8c45d22",
+        "indicator--7b40e447-37a4-586d-b42f-a06a934b5e09",
+        "indicator--9ad85ca5-f3f7-5058-980f-5bb84858fe5f",
+        "indicator--da3dd62a-b17a-5a78-963f-9333e55c93dd"
+      ],
+      "published": "2026-06-01T12:00:00Z",
+      "report_types": [
+        "campaign"
+      ],
+      "spec_version": "2.1",
+      "type": "report"
+    }
+  ],
+  "type": "bundle"
+}

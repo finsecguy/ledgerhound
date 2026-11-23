@@ -1,6 +1,6 @@
 """Config store: file/env default until an override is written, override
 wins the moment it exists, invalid writes persist nothing, and `reset`
-reverts cleanly — the same contract `lh config` and the dashboard's
+reverts cleanly, the same contract `lh config` and the dashboard's
 Settings page both depend on."""
 
 from __future__ import annotations
@@ -116,3 +116,4 @@ def test_list_config_reports_override_status_per_domain(db_session: Session) -> 
     assert runtime_overridden is True
     _, clustering_overridden = listing["clustering"]
     assert clustering_overridden is False
+

@@ -1,5 +1,5 @@
 """The publish/export gate: only an approved, non-stale assessment makes
-a campaign publishable — everything else (`lh export ...`, `lh publish`)
+a campaign publishable. Everything else (`lh export ...`, `lh publish`)
 delegates the decision here."""
 
 from __future__ import annotations
@@ -155,3 +155,4 @@ def test_list_publishable_campaigns_skips_unapproved(db_session: Session) -> Non
     codes = {c.code for c, _a, _p in results}
     assert codes == {"LH-2026-001"}
     assert unapproved.code not in codes
+

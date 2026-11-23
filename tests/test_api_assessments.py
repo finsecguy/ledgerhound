@@ -1,8 +1,8 @@
 """Assessment endpoints: the dashboard equivalent of every `lh assess`
-CLI test in `test_assess_drafter.py`/`test_assess_review.py` — same
+CLI test in `test_assess_drafter.py`/`test_assess_review.py`, same
 rejected cases (bad refs, unknown ATT&CK ids, attribution without
 support, wrong confidence vocabulary, inflow mismatch), same state
-machine, same stale-flag surfacing — because the API calls the exact
+machine, same stale-flag surfacing, because the API calls the exact
 same `assess/` functions, not a re-implementation."""
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ NOW = datetime(2026, 1, 1, tzinfo=UTC)
 def _attack_cache_for_edits(attack_cache: Any) -> None:
     """Every edit/draft endpoint in this file needs a resolvable ATT&CK
     cache (see the `attack_cache` fixture) even for drafts with no
-    `ttps` — the API loads it unconditionally, matching `lh assess edit`."""
+    `ttps`, the API loads it unconditionally, matching `lh assess edit`."""
 
 
 def _make_indicator(session: Session, itype: IndicatorType, value: str) -> Indicator:
@@ -343,3 +343,4 @@ def test_stale_flag_is_surfaced_on_the_assessment(
 
     response = api_client.get(f"/api/campaigns/{campaign.code}/assessment", params={"version": 1})
     assert response.json()["stale"] is True
+

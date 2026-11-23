@@ -5,7 +5,7 @@ network call path every provider is required to go through.
 The whole enrichment layer is async (`httpx.AsyncClient`, `async def
 enrich`): enrichment fans out across many independent network calls per
 indicator and across many indicators concurrently, which is exactly what
-asyncio is for. Milestone 1's collectors stay synchronous — this is scoped
+asyncio is for. Milestone 1's collectors stay synchronous. This is scoped
 to the enrichment layer only.
 """
 
@@ -35,7 +35,7 @@ class ProviderError(Exception):
     """Raised by a Provider when it cannot produce any usable result.
 
     Registry fallback triggers on this (and on any exception propagating
-    out of `enrich`) — never on a successful-but-`partial` ProviderResult,
+    out of `enrich`). Never on a successful-but-`partial` ProviderResult,
     which is a legitimate answer, just an incomplete one.
     """
 
@@ -46,7 +46,7 @@ class EnrichmentTarget:
 
     Providers never see the SQLAlchemy ORM `Indicator` directly: enrichment
     runs many concurrent asyncio tasks, and ORM instances are bound to the
-    sync `Session` that loaded them — not something safe to hand across
+    sync `Session` that loaded them, not something safe to hand across
     concurrently-running tasks. The scheduler snapshots this immutable
     triple up front and that's all a Provider ever gets.
     """
@@ -80,9 +80,9 @@ class ProviderResult[NormalizedT: BaseModel]:
 # --- Shared normalized shape for all four chain providers -------------------
 #
 # "Chain-specific quirks stay inside the provider module and must not leak
-# into the normalized model" — every one of btc.py/eth.py/tron.py/sol.py
+# into the normalized model". Every one of btc.py/eth.py/tron.py/sol.py
 # produces exactly this shape. Monetary values are `Decimal` in the chain's
-# smallest native unit (satoshi/wei/sun/lamport) — never float, so nothing
+# smallest native unit (satoshi/wei/sun/lamport). Never float, so nothing
 # downstream (tracing, reports, clustering) ever rounds a wallet balance.
 
 
@@ -139,7 +139,7 @@ async def http_request(
 
     Retries transport errors, 5xx, and 429 with exponential backoff; any
     other 4xx fails immediately since retrying won't help. No provider
-    module is allowed to call `httpx`/`requests` directly — everything
+    module is allowed to call `httpx`/`requests` directly. Everything
     routes through here (or `Provider.request`, a thin wrapper of this).
     """
     async for attempt in AsyncRetrying(
@@ -172,7 +172,7 @@ class Provider(ABC):
         """Fetch and normalize data for `target`.
 
         Raise `ProviderError`, or let an `httpx`/parse exception propagate,
-        if this provider cannot answer at all — the registry will fall
+        if this provider cannot answer at all, the registry will fall
         back to the next provider in the chain. Return a `ProviderResult`
         with `partial=True` for a real but incomplete answer instead.
         """
@@ -195,3 +195,4 @@ class Provider(ABC):
             backoff_seconds=backoff_seconds,
             **kwargs,
         )
+

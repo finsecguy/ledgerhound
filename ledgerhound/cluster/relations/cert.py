@@ -1,12 +1,12 @@
 """shares_cert: two domain indicators covered by the same TLS
-certificate (same issuer + serial number — crt.sh doesn't give us the
+certificate (same issuer + serial number. Crt.sh doesn't give us the
 literal SHA-256 fingerprint via the fields milestone 2 captured, so
 `{issuer}||{serial_number}` is the practical, equally-unique substitute:
 it's exactly what you'd look up on crt.sh by hand to verify this).
 
 A cert covering many SANs (shared hosting, a CDN, Let's Encrypt on a
 platform like Vercel/Netlify) is discounted rather than treated as a
-meaningful link — two phishing sites both hosted on Vercel share a cert
+meaningful link, two phishing sites both hosted on Vercel share a cert
 with thousands of unrelated SANs, and that's infrastructure, not
 evidence of a relationship.
 """
@@ -100,3 +100,4 @@ class SharesCertRelation(Relation):
                         "san_count": len(sans),
                     },
                 )
+

@@ -4,7 +4,11 @@ tested against the recorded fixture in tests/fixtures/enrich/sdn_sample.xml
 
 from __future__ import annotations
 
-from ledgerhound.enrich.labels.known import KnownAddressIndex
+import pytest
+import yaml
+from pydantic import ValidationError
+
+from ledgerhound.enrich.labels.known import DEFAULT_DATA_PATH, KnownAddressIndex, KnownAddressSet
 from ledgerhound.enrich.labels.ofac import OFACList, parse_sdn_xml
 from tests.conftest import FIXTURES_DIR
 
@@ -68,6 +72,26 @@ def test_known_address_index_loads_bundled_dataset() -> None:
     # Case-insensitive ETH matching applies to known.py too.
     hit_lower = index.lookup("eth", "0x722122df12d4e14e13ac3b6895a86e84145b6967")
     assert hit_lower is not None
+
+
+def test_exchange_hot_wallet_set_is_empty_until_cited() -> None:
+    raw = yaml.safe_load(DEFAULT_DATA_PATH.read_text(encoding="utf-8"))
+    hot = [item for item in raw["sets"] if item.get("label") == "Exchange hot wallet"]
+    assert len(hot) == 1
+    assert hot[0]["addresses"] == []
+    assert hot[0]["source_url"] is None
+    assert hot[0]["label_type"] == "exchange"
+
+
+def test_known_address_set_rejects_addresses_without_a_citation() -> None:
+    with pytest.raises(ValidationError):
+        KnownAddressSet(
+            chain="eth",
+            label_type="exchange",
+            label="Exchange hot wallet",
+            source="remembered from a blog",
+            addresses=["0x1111111111111111111111111111111111111111"],
+        )
 
 
 def test_known_address_index_miss_returns_none() -> None:

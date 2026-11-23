@@ -101,7 +101,7 @@ export default function CampaignDetail(): React.JSX.Element {
               }}
               title="Click to rename"
             >
-              {campaign.display_name ?? "(no display name — click to set one)"}
+              {campaign.display_name ?? "(no display name. Click to set one)"}
             </p>
           )}
         </div>
@@ -125,7 +125,7 @@ export default function CampaignDetail(): React.JSX.Element {
           </Link>
         ) : (
           <Link to={`/campaigns/${campaign.code}/assessment`} className="card--link card">
-            No assessment yet — draft one
+            No assessment yet. Draft one
           </Link>
         )}
         <Link to={`/campaigns/${campaign.code}/report`} className="card--link card">
@@ -194,3 +194,4 @@ export default function CampaignDetail(): React.JSX.Element {
     </div>
   );
 }
+

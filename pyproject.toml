@@ -5,7 +5,7 @@ description = "Crypto-scam campaign intelligence pipeline: collection, extractio
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
-authors = [{ name = "Herman K." }]
+authors = [{ name = "Herman K. (finsecguy)" }]
 
 dependencies = [
     "sqlalchemy>=2.0.35",
@@ -48,6 +48,7 @@ dev = [
     "freezegun>=1.5",
     "stix2-validator>=3.3",
     "types-Markdown>=3.6",
+    "playwright>=1.49",
 ]
 
 [build-system]

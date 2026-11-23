@@ -1,0 +1,21 @@
+{
+  "5802ce07-8e8c-589d-83fb-5a13c7dbc74b": {
+    "Orgc": {
+      "name": "Ledgerhound"
+    },
+    "Tag": [
+      {
+        "name": "tlp:clear"
+      },
+      {
+        "name": "estimative-language:confidence-in-analytic-judgment=\"moderate\""
+      }
+    ],
+    "analysis": "2",
+    "date": "2026-06-01",
+    "info": "LH-2026-001: SANITISED EXAMPLE. This campaign is a portfolio fixture, not a real cluster. The lures use wallet-support.example, claim",
+    "publish_timestamp": "1780315200",
+    "threat_level_id": "2",
+    "timestamp": "1780315200"
+  }
+}

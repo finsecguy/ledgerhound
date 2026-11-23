@@ -1,0 +1,23 @@
+[
+  {
+    "campaign": "LH-2026-001",
+    "first_seen": "2026-06-01T12:00:02+00:00",
+    "last_seen": "2026-06-01T12:00:02+00:00",
+    "type": "eth_address",
+    "value": "0x1111111111111111111111111111111111111111"
+  },
+  {
+    "campaign": "LH-2026-001",
+    "first_seen": "2026-06-01T12:00:01+00:00",
+    "last_seen": "2026-06-01T12:00:01+00:00",
+    "type": "eth_address",
+    "value": "0x3333333333333333333333333333333333333333"
+  },
+  {
+    "campaign": "LH-2026-001",
+    "first_seen": "2026-06-01T12:00:00+00:00",
+    "last_seen": "2026-06-01T12:00:00+00:00",
+    "type": "eth_address",
+    "value": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"
+  }
+]

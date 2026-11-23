@@ -13,7 +13,7 @@ Determinism: every object's `id` is a UUIDv5 derived from stable content
 (campaign code, indicator type+value, technique id, ...), not `uuid4()`.
 `created`/`modified`/`published` are all pinned to the published
 assessment's `reviewed_at` (when it was approved), not wall-clock export
-time — the same approved assessment always produces the same bundle
+time, the same approved assessment always produces the same bundle
 bytes. `stix2-validator` flags non-v4 ids as a "SHOULD" warning (check
 103), never an error; determinism is worth that trade.
 """
@@ -27,6 +27,7 @@ from typing import Any
 
 import stix2
 
+from ledgerhound import __author__ as PRODUCT_AUTHOR
 from ledgerhound.assess.attack import AttackDataset
 from ledgerhound.assess.drafter import overall_confidence
 from ledgerhound.assess.evidence import EvidencePack
@@ -111,7 +112,7 @@ TLP_MARKINGS: dict[str, dict[str, Any]] = {
 
 class StixExportError(Exception):
     """Raised when a bundle cannot be built without violating a hard
-    rule — most importantly, never inventing a MITRE ATT&CK STIX id."""
+    rule. Most importantly, never inventing a MITRE ATT&CK STIX id."""
 
 
 def _stix_id(obj_type: str, *parts: str) -> str:
@@ -124,7 +125,7 @@ def _indicator_pattern(indicator_type: str, value: str) -> str:
     """STIX has no native cryptocurrency-address or messaging-handle
     observable type, so chain addresses and Telegram handles use a
     documented custom SCO referenced by name in the pattern (`x-crypto-
-    address`, `x-telegram-handle`) — legal per STIX 2.1's `x-`-prefixed
+    address`, `x-telegram-handle`). Legal per STIX 2.1's `x-`-prefixed
     custom-type naming rule. Domains and URLs use their real native SCOs.
 
     `x-crypto-address` schema: `value` (str, the address) and `chain`
@@ -153,8 +154,8 @@ def build_campaign_bundle(
     tlp: str = "TLP:CLEAR",
 ) -> dict[str, Any]:
     """Build a full STIX 2.1 bundle for one campaign's approved
-    assessment. Pure function of its arguments — no DB session, no
-    network — so the same inputs always produce the same bundle."""
+    assessment. Pure function of its arguments, no DB session, no
+    network, so the same inputs always produce the same bundle."""
     if tlp not in TLP_MARKINGS:
         raise StixExportError(f"Unknown TLP marking {tlp!r}. Valid: {sorted(TLP_MARKINGS)}")
     marking = TLP_MARKINGS[tlp]
@@ -170,8 +171,9 @@ def build_campaign_bundle(
         created=as_of,
         modified=as_of,
         name="Ledgerhound",
+        description=f"Crypto-scam campaign intelligence pipeline. Author: {PRODUCT_AUTHOR}.",
         identity_class="organization",
-        contact_information=f"Analyst: {analyst}",
+        contact_information=f"Author: {PRODUCT_AUTHOR}. Analyst: {analyst}",
     )
 
     campaign_id = _stix_id("campaign", campaign.code)
@@ -306,3 +308,4 @@ def build_campaign_bundle(
 def serialize_bundle(bundle: dict[str, Any]) -> bytes:
     """Canonical, deterministic byte serialization of a bundle dict."""
     return (json.dumps(bundle, indent=2, sort_keys=True) + "\n").encode("utf-8")
+

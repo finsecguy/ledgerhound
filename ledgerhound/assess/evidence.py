@@ -1,9 +1,9 @@
 """Builds the closed evidence universe an assessment draft may reason from.
 
 `build_evidence_pack` reads everything Ledgerhound knows about a
-campaign's members — indicators, edges and their evidence, chain-address
+campaign's members. Indicators, edges and their evidence, chain-address
 and domain projections, certs, labels, and the reliability grade of each
-contributing source — and nothing else: no raw provider payloads, no
+contributing source, and nothing else: no raw provider payloads, no
 network access, no other campaign's data. The pack is a plain pydantic
 model, serialized deterministically (`evidence_hash`) so a stored draft's
 `evidence_hash` can always be checked against a freshly rebuilt pack to
@@ -11,7 +11,7 @@ detect drift, without ever needing to persist the pack itself.
 
 Every item in the pack carries a stable `ref` string derived from the
 underlying row's own natural identity (never a random id), so the same
-database state always produces the same refs — a drafted assessment's
+database state always produces the same refs, a drafted assessment's
 `supporting_evidence_refs` are checked against `EvidencePack.all_refs()`.
 """
 
@@ -130,7 +130,7 @@ class EvidencePack(BaseModel):
     certs: list[EvidenceCert]
     labels: list[EvidenceLabel]
     source_grades: list[SourceGrade]
-    #: The one number the model is never allowed to compute itself —
+    #: The one number the model is never allowed to compute itself
     #: `drafter.py` rejects a draft whose `financial.total_observed_inflow`
     #: doesn't match this exactly.
     total_observed_inflow: str
@@ -228,7 +228,7 @@ def build_evidence_pack(session: Session, campaign: Campaign) -> EvidencePack:
     ]
     # Wallet/cashout relations only ever link same-chain addresses (an
     # address string's format is chain-specific), and no relation links
-    # an address indicator to a domain indicator — so a single campaign's
+    # an address indicator to a domain indicator, so a single campaign's
     # address members, if any, are always a single chain, and a plain
     # sum is meaningful. See the M3 README's "no cross-type
     # corroboration" limitation for why that invariant holds.
@@ -344,7 +344,7 @@ def build_evidence_pack(session: Session, campaign: Campaign) -> EvidencePack:
 def describe_refs(pack: EvidencePack) -> dict[str, str]:
     """Short human-readable text for every evidence-pack ref, so a draft's
     citations can be expanded inline instead of shown as opaque ref
-    strings — used by both `lh assess show` and the dashboard's
+    strings. Used by both `lh assess show` and the dashboard's
     assessment endpoint, so the two never describe a ref differently."""
     descriptions: dict[str, str] = {}
     for member in pack.members:
@@ -381,3 +381,4 @@ def refresh_staleness(session: Session, campaign_id: UUID, current_evidence_hash
     )
     if approved is not None:
         approved.stale = approved.evidence_hash != current_evidence_hash
+

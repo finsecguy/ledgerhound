@@ -6,7 +6,7 @@ results:
 - An indicator's `first_seen`/`last_seen` only ever widen (min/max against
   the report's `fetched_at`), regardless of processing order.
 - An (indicator, raw_report) observation is created at most once, enforced
-  both by a pre-check and by the DB unique constraint — so re-running
+  both by a pre-check and by the DB unique constraint, so re-running
   extraction over the same reports is a no-op, not a duplicate-generator.
 """
 
@@ -138,3 +138,4 @@ def run_extraction(session: Session, *, since: datetime | None = None) -> Extrac
     )
     logger.info("extraction_run_complete", **asdict(result))
     return result
+

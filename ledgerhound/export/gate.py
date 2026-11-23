@@ -2,7 +2,7 @@
 with an approved, non-stale assessment can be exported or published.
 
 Staleness is re-checked here against a freshly built evidence pack
-rather than trusting whatever `Assessment.stale` last recorded — nothing
+rather than trusting whatever `Assessment.stale` last recorded. Nothing
 guarantees `lh assess draft`/`edit` (the only two things that normally
 refresh it) ran again after the campaign's evidence last changed, so an
 export/publish attempt always gets the current, authoritative answer.
@@ -39,7 +39,7 @@ def get_publishable_assessment(
     refresh_staleness(session, campaign.id, pack.evidence_hash)
     if approved.stale:
         raise NotPublishableError(
-            f"{campaign.code}'s approved assessment (v{approved.version}) is stale — "
+            f"{campaign.code}'s approved assessment (v{approved.version}) is stale. "
             "its evidence has changed since approval. Re-draft and re-approve before "
             "publishing."
         )
@@ -48,7 +48,7 @@ def get_publishable_assessment(
 
 def list_publishable_campaigns(session: Session) -> list[tuple[Campaign, Assessment, EvidencePack]]:
     """Every campaign with a currently-approved, non-stale assessment,
-    sorted by code — used by the "all campaigns" export commands
+    sorted by code. Used by the "all campaigns" export commands
     (`lh export misp`, `lh export feed`, `lh publish --all`)."""
     results: list[tuple[Campaign, Assessment, EvidencePack]] = []
     for campaign in session.scalars(select(Campaign).order_by(Campaign.code)):
@@ -58,3 +58,4 @@ def list_publishable_campaigns(session: Session) -> list[tuple[Campaign, Assessm
             continue
         results.append((campaign, assessment, pack))
     return results
+

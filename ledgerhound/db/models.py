@@ -2,15 +2,15 @@
 
 Six tables, per the milestone 1 spec:
 
-- ``sources``      — configured feeds Ledgerhound collects from.
-- ``raw_reports``  — deduplicated raw payloads fetched from a source.
-- ``indicators``   — canonicalized IOCs (addresses, domains, URLs, handles).
-- ``indicator_observations`` — join table: which raw report an indicator
+- ``sources``. Configured feeds Ledgerhound collects from.
+- ``raw_reports``. Deduplicated raw payloads fetched from a source.
+- ``indicators``. Canonicalized IOCs (addresses, domains, URLs, handles).
+- ``indicator_observations``. Join table: which raw report an indicator
   was seen in, and when.
-- ``enrichment``   — provider lookups against an indicator. Unused until
+- ``enrichment``. Provider lookups against an indicator. Unused until
   milestone 2; the table exists now so the schema doesn't need a breaking
   migration later.
-- ``edges``        — inferred relationships between indicators, the basis
+- ``edges``. Inferred relationships between indicators, the basis
   for campaign clustering. Unused until milestone 3, same rationale.
 
 All tables share a UUID primary key and timezone-aware ``created_at`` /
@@ -258,7 +258,7 @@ class Edge(TimestampMixin, Base):
 # These tables are the normalized projection milestone 3's clustering
 # queries directly, instead of parsing raw payloads on every read.
 # Monetary values are `Numeric` (Python `Decimal`), never float, on both
-# Postgres and SQLite — matching the normalized pydantic models in
+# Postgres and SQLite. Matching the normalized pydantic models in
 # `ledgerhound.enrich.base`.
 
 _CHAIN_VALUES_SQL = "'btc', 'eth', 'tron', 'sol'"
@@ -370,13 +370,13 @@ class DomainProfile(TimestampMixin, Base):
     #: Domain status codes (RDAP `status` / WHOIS "Domain Status"), e.g.
     #: "clientTransferProhibited".
     status: Mapped[list[str]] = mapped_column(JSONB(), nullable=False, default=list)
-    #: Which provider actually served the registration-data facet — RDAP
+    #: Which provider actually served the registration-data facet. RDAP
     #: (via IANA bootstrap or rdap.org) or the WHOIS fallback. Distinct
     #: from `enrichment.provider`, which is per raw-payload row; this is
     #: specifically for the registration-data half of this merged
     #: projection, since DNS/certs/HTTP each have their own provider too
     #: (recorded in `enrichment`, not broken out into their own column
-    #: here — only registration data's provenance was asked for).
+    #: here, only registration data's provenance was asked for).
     registration_provider: Mapped[str | None] = mapped_column(String(255), nullable=True)
     ns_records: Mapped[list[str]] = mapped_column(JSONB(), nullable=False, default=list)
     asn: Mapped[str | None] = mapped_column(String(32), nullable=True)
@@ -467,9 +467,9 @@ class TraceNodeRow(TimestampMixin, Base):
     Added in milestone 3: milestone 2's `lh trace` computed this data in
     memory (to print it) but never persisted it, leaving `traces`/
     `trace_edges` populated with edges but no way to know which addresses
-    were terminal or why. `shares_cashout_path` needs exactly that — two
+    were terminal or why. `shares_cashout_path` needs exactly that, two
     different indicators' traces reaching the same *labeled* terminal
-    node — so this table fills the gap.
+    node, so this table fills the gap.
     """
 
     __tablename__ = "trace_nodes"
@@ -495,7 +495,7 @@ class TraceNodeRow(TimestampMixin, Base):
 
 # --- Milestone 3: clustering -------------------------------------------
 #
-# `edges` (milestone 1's schema) is populated here for the first time —
+# `edges` (milestone 1's schema) is populated here for the first time
 # each `cluster.relations.*` detector writes indicator-to-indicator edges
 # with evidence. Connected components of that graph above a score
 # threshold become campaigns.
@@ -515,11 +515,11 @@ class Campaign(TimestampMixin, Base):
 
     code: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     #: Survives re-runs even though `code` and computed fields don't
-    #: depend on it — an analyst-assigned label.
+    #: depend on it, an analyst-assigned label.
     display_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     status: Mapped[str] = mapped_column(String(10), nullable=False, default="active")
     score: Mapped[float] = mapped_column(Float(), nullable=False)
-    #: Distinct relation types present among this campaign's edges — the
+    #: Distinct relation types present among this campaign's edges, the
     #: literal evidence that it isn't a registrar/NS-only false positive.
     relation_types: Mapped[list[str]] = mapped_column(JSONB(), nullable=False, default=list)
     first_seen: Mapped[datetime] = mapped_column(UTCDateTime(), nullable=False)
@@ -564,10 +564,10 @@ class CampaignEvent(TimestampMixin, Base):
     )
     event_type: Mapped[str] = mapped_column(String(10), nullable=False)
     occurred_at: Mapped[datetime] = mapped_column(UTCDateTime(), nullable=False)
-    #: Codes of the other campaign(s) involved — absorbed into this one
+    #: Codes of the other campaign(s) involved. Absorbed into this one
     #: (merge) or split out of it (split).
     related_campaign_codes: Mapped[list[str]] = mapped_column(JSONB(), nullable=False, default=list)
-    #: Indicator ids (as strings) — this campaign's membership immediately
+    #: Indicator ids (as strings). This campaign's membership immediately
     #: before and after the event.
     members_before: Mapped[list[str]] = mapped_column(JSONB(), nullable=False)
     members_after: Mapped[list[str]] = mapped_column(JSONB(), nullable=False)
@@ -581,7 +581,7 @@ class CampaignEvent(TimestampMixin, Base):
 # --- Milestone 4: assessment -------------------------------------------
 #
 # The LLM drafts; the analyst decides. Every draft the model produces is
-# a new, immutable version row here — editing or re-drafting never
+# a new, immutable version row here. Editing or re-drafting never
 # overwrites a prior version, so `lh assess diff` and the audit trail
 # (who approved/rejected what, and when) always have something to show.
 
@@ -592,12 +592,12 @@ class Assessment(TimestampMixin, Base):
     """One versioned analytic assessment draft for a campaign.
 
     `evidence_hash` is the sha256 of the deterministic `EvidencePack` the
-    draft was produced (or re-validated, for a human edit) against —
+    draft was produced (or re-validated, for a human edit) against
     every draft can be traced back to exactly what evidence produced it,
     per `assess/evidence.py`. `stale` is set on the currently *approved*
     version, not the draft that created it, whenever a later evidence
     pack's hash no longer matches it (see `assess/evidence.py`'s
-    `refresh_staleness`) — a future report layer must refuse to publish a
+    `refresh_staleness`), a future report layer must refuse to publish a
     stale approved assessment until it's re-reviewed.
     """
 
@@ -606,7 +606,7 @@ class Assessment(TimestampMixin, Base):
     campaign_id: Mapped[uuid.UUID] = mapped_column(
         GUID(), ForeignKey("campaigns.id", ondelete="CASCADE"), nullable=False
     )
-    #: 1, 2, 3, ... per campaign — never reused, never overwritten.
+    #: 1, 2, 3, ... per campaign. Never reused, never overwritten.
     version: Mapped[int] = mapped_column(Integer(), nullable=False)
     evidence_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     prompt_version: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -614,7 +614,7 @@ class Assessment(TimestampMixin, Base):
     draft: Mapped[dict[str, Any]] = mapped_column(JSONB(), nullable=False)
     status: Mapped[str] = mapped_column(String(12), nullable=False, default="draft")
     #: True when this version was produced by `lh assess edit`, not a
-    #: fresh LLM draft — distinguishes a human-authored version in the
+    #: fresh LLM draft. Distinguishes a human-authored version in the
     #: audit trail from one the model produced unattended.
     edited_by_human: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
     #: Only meaningful on a version whose `status == "approved"`: set when
@@ -650,7 +650,7 @@ class Assessment(TimestampMixin, Base):
 # An append-only publish log, one row per `lh publish` run: which
 # approved assessment version was published, under what TLP marking, and
 # a content hash for every artifact produced (STIX bundle, MISP event,
-# IOC feed entry, Markdown/PDF report) — so "what did we actually publish
+# IOC feed entry, Markdown/PDF report), so "what did we actually publish
 # and when" is answerable without re-deriving it from files on disk.
 
 
@@ -662,7 +662,7 @@ class Publication(TimestampMixin, Base):
     campaign_id: Mapped[uuid.UUID] = mapped_column(
         GUID(), ForeignKey("campaigns.id", ondelete="CASCADE"), nullable=False
     )
-    #: The specific approved assessment version this publish used —
+    #: The specific approved assessment version this publish used
     #: publishing again after a re-approval creates a new row, never
     #: rewrites this one.
     assessment_id: Mapped[uuid.UUID] = mapped_column(
@@ -686,18 +686,18 @@ class Publication(TimestampMixin, Base):
 # --- Config store ---------------------------------------------------------
 #
 # GUI/CLI-editable overrides for the config that otherwise lives in
-# config/*.yaml files and .env — see `ledgerhound/config_store.py`. A row
+# config/*.yaml files and .env. See `ledgerhound/config_store.py`. A row
 # existing for a given key takes precedence over that domain's
 # file/env default the moment it's written; deleting it (`lh config
 # reset`) reverts to that default. `DATABASE_URL` and the logging
-# settings are deliberately never part of this store — they're needed
+# settings are deliberately never part of this store. They're needed
 # to reach this table (or configure logging) before it can be read.
 
 
 class ConfigOverride(Base):
     """One config domain's current override value: `sources`,
     `providers`, `clustering`, or `runtime`. A natural string key, not a
-    generated id — there's exactly one row per domain, ever."""
+    generated id. There's exactly one row per domain, ever."""
 
     __tablename__ = "config_overrides"
 
@@ -707,3 +707,4 @@ class ConfigOverride(Base):
         UTCDateTime(), server_default=func.now(), onupdate=func.now(), nullable=False
     )
     updated_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+

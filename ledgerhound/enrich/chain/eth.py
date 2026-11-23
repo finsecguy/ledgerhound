@@ -2,7 +2,7 @@
 
 **Deviation from the milestone brief's literal "RPC primary, Blockscout
 fallback" ordering, done deliberately:** plain JSON-RPC has no
-"transactions for this address" method — a node only exposes
+"transactions for this address" method, a node only exposes
 `eth_getBalance`/`eth_getTransactionCount` for an address; getting
 history requires either an indexer API (which is exactly what Blockscout
 is) or scanning `eth_getLogs`/every block yourself, which is far too
@@ -172,3 +172,4 @@ class PublicRpcEthProvider(Provider):
             fetched_at=datetime.now(UTC),
             partial=True,
         )
+

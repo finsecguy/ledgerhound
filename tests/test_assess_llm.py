@@ -1,6 +1,6 @@
 """`OpenAICompatibleLLM`: the request it builds (tool spec, forced
 tool_choice, auth header, configurable base_url) and how it parses a
-response back into a plain dict — both the common case (arguments as a
+response back into a plain dict, both the common case (arguments as a
 JSON string) and a self-hosted server that hands back a pre-parsed
 object. The real network is never touched; `httpx.MockTransport`
 inspects the outgoing request and returns a canned response."""
@@ -117,3 +117,4 @@ def test_draft_raises_on_http_error_status() -> None:
     llm = OpenAICompatibleLLM(api_key="sk-bad", client=_client(handler))
     with pytest.raises(httpx.HTTPStatusError):
         llm.draft(model="m", system="s", user_message="u", tool_schema=TOOL_SCHEMA)
+

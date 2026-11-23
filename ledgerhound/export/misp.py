@@ -7,7 +7,7 @@ Attribute type mapping is honest about MISP's real, current type list
 during development): `btc` is a real native MISP attribute type; `domain`
 and `url` are real and native. Ethereum/TRON/Solana addresses and
 Telegram handles have **no** native MISP cryptocurrency-address type as
-of writing (only `btc` and `xmr` exist) — mapping them to an invented
+of writing (only `btc` and `xmr` exist). Mapping them to an invented
 `eth`/`tron`/`sol` type would silently fail import into a real MISP
 instance, so they use MISP's generic `text` type instead, with a comment
 noting what they actually are.
@@ -15,7 +15,7 @@ noting what they actually are.
 Tags are real, verified MISP taxonomy values, not invented ones:
 - TLP: `tlp:<color>` (MISP/misp-taxonomies `tlp/machinetag.json`).
 - Confidence: `estimative-language:confidence-in-analytic-judgment="low|moderate|high"`
-  (MISP/misp-taxonomies `estimative-language/machinetag.json` — this
+  (MISP/misp-taxonomies `estimative-language/machinetag.json`. This
   predicate's values are exactly our vocabulary, verified directly
   against that file rather than assumed).
 - ATT&CK: `misp-galaxy:mitre-attack-pattern="<technique name> - <TID>"`
@@ -40,7 +40,7 @@ from ledgerhound.db.models import Assessment, Campaign
 CampaignData = tuple[Campaign, Assessment, EvidencePack]
 
 #: MISP has no native address type for these chains (confirmed against
-#: PyMISP's describeTypes.json — only `btc` and `xmr` are native
+#: PyMISP's describeTypes.json, only `btc` and `xmr` are native
 #: cryptocurrency types). Falling back to `text` rather than an invented
 #: type name that a real MISP instance would silently reject on import.
 _MISP_ATTRIBUTE_TYPE = {
@@ -82,7 +82,7 @@ def build_misp_event(
     for member in sorted(pack.members, key=lambda m: m.ref):
         misp_type = _MISP_ATTRIBUTE_TYPE.get(member.indicator_type, "text")
         # `text` is a generic fallback for types MISP has no native
-        # attribute type for (see the module docstring) — note what the
+        # attribute type for (see the module docstring). Note what the
         # value actually is so an analyst reading the event isn't left
         # guessing at a bare "text" attribute.
         comment = member.indicator_type if misp_type == "text" else ""
@@ -158,7 +158,7 @@ def build_manifest_entry(event: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_hashes_csv(events: list[dict[str, Any]]) -> bytes:
-    """One `<sha256-of-attribute-value>,<event-uuid>` line per attribute —
+    """One `<sha256-of-attribute-value>,<event-uuid>` line per attribute
     the MISP feed convention that lets a MISP instance check a hash
     against the feed without downloading every event first."""
     buffer = io.StringIO()
@@ -207,3 +207,4 @@ def write_misp_feed(
     written.append(hashes_path)
 
     return sorted(written)
+

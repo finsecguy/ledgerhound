@@ -1,7 +1,7 @@
 """MITRE ATT&CK Enterprise technique dataset.
 
 `drafter.py` rejects any assessment draft that cites a `technique_id` not
-in this dataset — an assessment can't claim tradecraft that doesn't
+in this dataset, an assessment can't claim tradecraft that doesn't
 exist in ATT&CK. The dataset is loaded from MITRE's public STIX bundle
 once and cached locally as a small distilled `{technique_id: name}` map
 (not the ~30MB raw bundle) so every later command is a fast local read,
@@ -33,7 +33,7 @@ class AttackDataset:
     """A distilled technique_id -> name map, the collection version it
     was built from (recorded so an assessment can note which ATT&CK
     release its `ttps` were validated against), and technique_id -> the
-    technique's real MITRE STIX id (`attack-pattern--<uuid>`) — milestone
+    technique's real MITRE STIX id (`attack-pattern--<uuid>`). Milestone
     5's STIX export must reference MITRE's own canonical object ids and
     is forbidden from inventing new ones."""
 
@@ -61,7 +61,7 @@ def parse_stix_bundle(raw: dict[str, Any]) -> AttackDataset:
         obj_type = obj.get("type")
         if obj_type == "x-mitre-collection":
             # MITRE's field is `x_mitre_version` (e.g. "19.2"), not the
-            # generic STIX `version` — confirmed against the live bundle;
+            # generic STIX `version`. Confirmed against the live bundle;
             # every ATT&CK-specific field in this schema is `x_mitre_*`.
             version = obj.get("x_mitre_version") or version
             continue
@@ -149,7 +149,7 @@ class AttackDatasetUnavailableError(Exception):
 
 
 def load_cached_attack_dataset(cache_path: Path) -> AttackDataset:
-    """Load the distilled dataset from the local cache only — never
+    """Load the distilled dataset from the local cache only. Never
     fetches. Used by `ledgerhound.export`, which is forbidden from making
     network calls: STIX export needs MITRE's real technique STIX ids, but
     must get them from whatever `lh assess draft` already cached, not a
@@ -161,3 +161,4 @@ def load_cached_attack_dataset(cache_path: Path) -> AttackDataset:
             "campaign at least once to populate it before exporting."
         )
     return cached
+

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Dumps the FastAPI app's OpenAPI schema to web/openapi.json, without
-# starting a server — `app.openapi()` builds the schema in-process.
+# starting a server. `app.openapi()` builds the schema in-process.
 # `npm run generate:types` runs this and then openapi-typescript over
 # the result; the generated src/api/schema.ts is checked in so a fresh
 # `npm install && npm run build` never needs the Python backend
@@ -20,3 +20,4 @@ from ledgerhound.api.main import app
 print(json.dumps(app.openapi()))
 " > openapi.json
 echo "Wrote $(pwd)/openapi.json"
+

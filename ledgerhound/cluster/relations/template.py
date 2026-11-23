@@ -1,5 +1,5 @@
 """shares_template: two domain indicators serving byte-identical page
-content (body hash) and/or a byte-identical favicon — the same phishing
+content (body hash) and/or a byte-identical favicon, the same phishing
 kit deployed on different domains.
 
 Same liveness-window requirement as `shares_cert`: two domains only count
@@ -81,3 +81,4 @@ class SharesTemplateRelation(Relation):
                     "dst_fetched_at": dst_seen.isoformat(),
                 },
             )
+

@@ -3,11 +3,11 @@ import ForceGraph2D, { type ForceGraphMethods } from "react-force-graph-2d";
 
 import type { CampaignGraph, GraphEdge, GraphNode } from "../api/client";
 
-// Colored by indicator type (nodes) and relation type (edges) — a fixed,
+// Colored by indicator type (nodes) and relation type (edges), a fixed,
 // small palette rather than auto-coloring, so the same type always
 // reads as the same color across every campaign's graph. Chosen for
 // legibility against the warm-ink background (--ink, #161310), not
-// matched to the UI's own muted palette — a graph's category colors are
+// matched to the UI's own muted palette, a graph's category colors are
 // content, not chrome, so they're allowed more saturation than the rest
 // of the app.
 const NODE_COLORS: Record<string, string> = {
@@ -26,7 +26,7 @@ const RELATION_COLORS: Record<string, string> = {
   shares_cashout_path: "#d9b23c",
   shares_cert: "#d9634f",
   shares_template: "#8c7ae6",
-  // Corroboration-only relation (see cluster/scoring.py) — deliberately
+  // Corroboration-only relation (see cluster/scoring.py). Deliberately
   // the weakest color here too, matching its weakest evidentiary weight.
   shares_registrar_and_ns: "#6b6152",
 };
@@ -60,7 +60,7 @@ interface EntityGraphProps {
 
 /** Interactive force-directed entity graph. Nodes colored by indicator
  * type, edge thickness scaled by weight, edge color by relation type.
- * Clicking a node/edge doesn't render evidence itself — it reports the
+ * Clicking a node/edge doesn't render evidence itself. It reports the
  * selection up to the caller (`CampaignDetail`), which fetches/renders
  * the actual evidence panel; this component only owns the graph. */
 export default function EntityGraph({
@@ -82,7 +82,7 @@ export default function EntityGraph({
   );
 
   // The graph settling into its force-directed layout is this app's one
-  // deliberate motion moment (see theme.css) — reduced-motion viewers
+  // deliberate motion moment (see theme.css). Reduced-motion viewers
   // get the same final layout without watching it animate there.
   const reducedMotion = useMemo(prefersReducedMotion, []);
 
@@ -111,3 +111,4 @@ export default function EntityGraph({
 }
 
 export const _internal = { NODE_COLORS, RELATION_COLORS };
+

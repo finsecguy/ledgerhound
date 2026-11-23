@@ -2,7 +2,7 @@
 determinism, and the never-invent-an-ATT&CK-id hard rule.
 
 Validation relies on `conftest.py`'s self-heal of the `stix2-validator`
-PyPI package's missing bundled schemas — no `schema_dir` needs passing
+PyPI package's missing bundled schemas, no `schema_dir` needs passing
 here since that fix places the vendored schemas at the exact path the
 library looks for by default.
 """
@@ -178,3 +178,4 @@ def test_bundle_contains_expected_object_types(
         "attack-pattern",
         "report",
     }
+

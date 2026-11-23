@@ -1,5 +1,5 @@
 """ATT&CK STIX bundle parsing (revoked/deprecated exclusion) and the
-local-cache-first loading behavior — a second load must never touch the
+local-cache-first loading behavior, a second load must never touch the
 network once the cache exists."""
 
 from __future__ import annotations
@@ -88,3 +88,4 @@ def test_load_attack_dataset_fetches_once_then_serves_from_cache(tmp_path: Path)
 def test_load_cached_attack_dataset_raises_when_no_cache_exists(tmp_path: Path) -> None:
     with pytest.raises(AttackDatasetUnavailableError):
         load_cached_attack_dataset(tmp_path / "missing.json")
+

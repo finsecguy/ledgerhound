@@ -1,12 +1,12 @@
 """Static IOC feed: per-campaign JSON, a combined `iocs.csv`/`iocs.json`,
-a `feed.json` index, and an `index.html` listing — plain files suitable
+a `feed.json` index, and an `index.html` listing. Plain files suitable
 for GitHub Pages or any static host, no server-side logic required.
 
 Defanged by default (every value comes from `EvidencePack`'s own
 `defanged_value`, the same column extraction already computed for every
-domain/URL indicator — see `extract/normalize.py`); `--refanged` swaps in
+domain/URL indicator. See `extract/normalize.py`); `--refanged` swaps in
 the raw `value` instead. Chain addresses and Telegram handles have
-nothing to defang, so `defanged_value == value` for them already — the
+nothing to defang, so `defanged_value == value` for them already, the
 switch is a no-op for those rows either way.
 """
 
@@ -49,7 +49,7 @@ def build_campaign_entry(
 
 def build_combined_iocs(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Flatten every campaign entry's indicators into one list, each row
-    tagged with its campaign code — the source for both `iocs.json` and
+    tagged with its campaign code, the source for both `iocs.json` and
     `iocs.csv`."""
     rows: list[dict[str, Any]] = []
     for entry in entries:
@@ -143,3 +143,4 @@ def write_feed(
     written.append(index_html_path)
 
     return sorted(written)
+

@@ -33,14 +33,14 @@ class DnsRecords(BaseModel):
     mx: list[str] = Field(default_factory=list)
     txt: list[str] = Field(default_factory=list)
     nxdomain: bool = False
-    #: ASN hosting the first A record, if any — clustering joins scam
+    #: ASN hosting the first A record, if any. Clustering joins scam
     #: infrastructure on shared hosting providers via this field.
     asn: str | None = None
 
 
 async def lookup_asn(ip: str) -> str | None:
     """Resolve an IPv4 address to its announcing ASN via Team Cymru's
-    free DNS-based IP-to-ASN service — a reverse-octet TXT query against
+    free DNS-based IP-to-ASN service, a reverse-octet TXT query against
     `origin.asn.cymru.com`, no API key or HTTP endpoint involved. Returns
     just the ASN number (e.g. "16509"), or None if the lookup fails."""
     octets = ip.split(".")
@@ -63,7 +63,7 @@ async def lookup_asn(ip: str) -> str | None:
 class DnsResolverProvider(Provider):
     """Primary: a full recursive resolver via dnspython.
 
-    Not an HTTP call, so it doesn't route through `http_request` — but it
+    Not an HTTP call, so it doesn't route through `http_request`, but it
     gets the same retry/backoff treatment via the same tenacity library,
     for the same reason: a single transient UDP timeout shouldn't fail
     the whole lookup.
@@ -130,7 +130,7 @@ _DOH_TYPE_CODES = {"A": 1, "AAAA": 28, "NS": 2, "MX": 15, "TXT": 16}
 
 
 class CloudflareDohProvider(Provider):
-    """Fallback: Cloudflare's DNS-over-HTTPS JSON API — same data, plain
+    """Fallback: Cloudflare's DNS-over-HTTPS JSON API, same data, plain
     HTTPS transport, so it survives environments that block raw DNS."""
 
     name = "cloudflare_doh"
@@ -185,3 +185,4 @@ class CloudflareDohProvider(Provider):
         return ProviderResult(
             provider=self.name, raw=raw, normalized=records, fetched_at=datetime.now(UTC)
         )
+

@@ -1,13 +1,13 @@
 """Domain registration data: RDAP primary, real WHOIS fallback.
 
 RDAP (RFC 7480+) is ICANN-mandated for gTLD registries and is plain
-HTTPS/JSON — it's the primary source here. But RDAP deployment is not
+HTTPS/JSON. It's the primary source here. But RDAP deployment is not
 universal: several ccTLDs (`.sk`, `.ch`, and others verified live during
 development) either have no RDAP server registered in IANA's bootstrap
 registry at all, or an incomplete/unreliable one (`.cz` has a bootstrap
 entry but its RDAP server isn't consistently reliable). For those,
 falling back to nothing would silently lose registration data for a
-meaningful slice of ccTLD-hosted phishing domains — so this module also
+meaningful slice of ccTLD-hosted phishing domains, so this module also
 implements classic port-43 WHOIS as an explicit fallback, not a
 convenience.
 
@@ -35,6 +35,7 @@ import structlog
 from pydantic import BaseModel, Field
 from tenacity import AsyncRetrying, retry_if_exception_type, stop_after_attempt, wait_exponential
 
+from ledgerhound.assess.untrusted import neutralize_untrusted_text
 from ledgerhound.db.models import IndicatorType
 from ledgerhound.enrich.base import (
     EnrichmentTarget,
@@ -51,7 +52,7 @@ class DomainRegistrationProfile(BaseModel):
     """Normalized registration data, produced by either RDAP or WHOIS."""
 
     #: False only once a provider has positively confirmed the domain is
-    #: unregistered (RDAP 404 / WHOIS "not found" text) — a real result,
+    #: unregistered (RDAP 404 / WHOIS "not found" text), a real result,
     #: not a failure.
     registered: bool = True
     registrar: str | None = None
@@ -59,6 +60,10 @@ class DomainRegistrationProfile(BaseModel):
     updated_at: datetime | None = None
     expires_at: datetime | None = None
     registrant_country: str | None = None
+    #: Registrant display name when the record includes one. Screened for
+    #: instruction-shaped text. Not copied onto `domain_profiles`; it exists
+    #: so a poisoned vCard cannot travel onward as a clean string.
+    registrant_name: str | None = None
     #: True if registrant details appear to be privacy-redacted rather
     #: than genuinely absent. Redaction status is itself a weak signal
     #: (redacted-by-default is near-universal for gTLDs post-2018) and is
@@ -101,10 +106,30 @@ def _is_redacted_marker(value: str | None) -> bool:
     return value is not None and value.strip().lower() in _REDACTED_VALUE_MARKERS
 
 
+def _screen(value: str | None) -> str | None:
+    if value is None:
+        return None
+    return neutralize_untrusted_text(value)
+
+
+def screen_registration(profile: DomainRegistrationProfile) -> DomainRegistrationProfile:
+    """Neutralise free-text registration fields. Redaction flags are
+    computed from the original strings before this runs."""
+    return profile.model_copy(
+        update={
+            "registrar": _screen(profile.registrar),
+            "registrant_name": _screen(profile.registrant_name),
+            "registrant_country": _screen(profile.registrant_country),
+            "status": [_screen(item) or "" for item in profile.status],
+            "nameservers": [_screen(item) or "" for item in profile.nameservers],
+        }
+    )
+
+
 def _has_rfc9537_redaction(payload: dict[str, Any]) -> bool:
     """RFC 9537 "Redaction of Personal Data in EPP and RDAP": a top-level
     `redacted` array of {name, prePath, method, reason} entries. Presence
-    of any entry is itself the authoritative redaction signal — it's a
+    of any entry is itself the authoritative redaction signal. It's a
     structured declaration, not a heuristic."""
     redacted = payload.get("redacted")
     return isinstance(redacted, list) and len(redacted) > 0
@@ -161,7 +186,7 @@ def parse_rdap(payload: dict[str, Any]) -> DomainRegistrationProfile:
 
     # Missing registrant entity, an RFC 9537 declaration, a redaction
     # remark, or a known placeholder value in the vCard: any one of these
-    # is sufficient to call it redacted. Order doesn't matter — they're
+    # is sufficient to call it redacted. Order doesn't matter. They're
     # not mutually exclusive, and the result is stored either way.
     redacted = (
         not registrant_entity_present
@@ -171,16 +196,21 @@ def parse_rdap(payload: dict[str, Any]) -> DomainRegistrationProfile:
         or _is_redacted_marker(registrant_country)
     )
 
-    return DomainRegistrationProfile(
-        registered=True,
-        registrar=registrar,
-        created_at=created_at,
-        updated_at=updated_at,
-        expires_at=expires_at,
-        registrant_country=None if _is_redacted_marker(registrant_country) else registrant_country,
-        redacted=redacted,
-        status=list(payload.get("status", [])),
-        nameservers=nameservers,
+    return screen_registration(
+        DomainRegistrationProfile(
+            registered=True,
+            registrar=registrar,
+            created_at=created_at,
+            updated_at=updated_at,
+            expires_at=expires_at,
+            registrant_country=(
+                None if _is_redacted_marker(registrant_country) else registrant_country
+            ),
+            registrant_name=registrant_name,
+            redacted=redacted,
+            status=[str(item) for item in payload.get("status", [])],
+            nameservers=nameservers,
+        )
     )
 
 
@@ -188,7 +218,7 @@ def parse_rdap(payload: dict[str, Any]) -> DomainRegistrationProfile:
 #: only its response body tells them apart: a genuine "this domain isn't
 #: registered" (from the registry, usually an empty body) versus "I don't
 #: have any RDAP server to ask for this TLD at all" (its own bootstrap
-#: miss, body carries this exact title) — verified live against .ch/.sk.
+#: miss, body carries this exact title). Verified live against .ch/.sk.
 #: The second case must NOT be recorded as `registered=False`; it must
 #: fall through to the next provider (WHOIS), same as a bootstrap miss in
 #: `IanaBootstrapRdapProvider` does.
@@ -209,7 +239,7 @@ async def _fetch_rdap(
 ) -> ProviderResult[DomainRegistrationProfile]:
     """Shared by both RDAP providers: fetch + parse, with 404 (domain not
     registered) treated as a valid result rather than a failure. 429 is
-    not special-cased here — it's already in `http_request`'s retryable
+    not special-cased here. It's already in `http_request`'s retryable
     set, so backoff happens transparently before this ever sees it."""
     try:
         response = await provider.request("GET", url, **request_kwargs)
@@ -241,7 +271,7 @@ DEFAULT_BOOTSTRAP_CACHE_PATH = Path(".cache/rdap_bootstrap.json")
 class IanaBootstrapRdapProvider(Provider):
     """Primary: resolve the authoritative RDAP server for a domain's TLD
     via IANA's own bootstrap registry, then query it directly. Never
-    hardcodes a per-TLD server — the bootstrap file is the single source
+    hardcodes a per-TLD server, the bootstrap file is the single source
     of truth for "who answers RDAP for this TLD," fetched fresh at most
     once per `bootstrap_ttl` and cached to disk so a run doesn't refetch
     the (small, but non-trivial) file per domain.
@@ -300,7 +330,7 @@ class IanaBootstrapRdapProvider(Provider):
 class RdapOrgProvider(Provider):
     """Secondary RDAP path: rdap.org does its own bootstrap resolution and
     redirects to the right authoritative server, independent of our own
-    bootstrap file/cache/logic — a genuinely separate failure domain from
+    bootstrap file/cache/logic, a genuinely separate failure domain from
     `IanaBootstrapRdapProvider`, not just a second implementation of the
     same lookup."""
 
@@ -326,7 +356,7 @@ _SOCKET_TIMEOUT = 10.0
 #: domain name. SK-NIC is the concrete, verified-live example; add more
 #: here as they're discovered rather than assuming bare-domain works
 #: universally (thin-gTLD-style referral chasing, e.g. Verisign's
-#: registrar-WHOIS-server hop for .com, is out of scope — WHOIS is only
+#: registrar-WHOIS-server hop for .com, is out of scope. WHOIS is only
 #: ever reached here for TLDs RDAP doesn't cover, which in practice means
 #: ccTLDs with thick, direct-answer registries, not gTLDs).
 _QUERY_FORMATS: dict[str, str] = {
@@ -351,7 +381,7 @@ def _looks_like_not_found(text: str) -> bool:
 async def _whois_query(host: str, query: str, *, timeout: float = _SOCKET_TIMEOUT) -> str:
     """Raw port-43 WHOIS query, behind the same retry/backoff shape as
     every HTTP call in this codebase (tenacity, exponential backoff, a
-    few attempts) — it just can't literally be `http_request`, since this
+    few attempts). It just can't literally be `http_request`, since this
     isn't HTTP. See `infra/dns.py` for the same reasoning applied to
     dnspython's UDP/TCP resolver."""
 
@@ -389,7 +419,7 @@ async def _resolve_whois_server(
     tld: str, *, cache: dict[str, str | None], timeout: float = _SOCKET_TIMEOUT
 ) -> str | None:
     """Per-TLD WHOIS server, resolved via IANA's own referral rather than
-    a hardcoded map — query `whois.iana.org` for the TLD and read the
+    a hardcoded map. Query `whois.iana.org` for the TLD and read the
     `whois:`/`refer:` field out of its response."""
     if tld in cache:
         return cache[tld]
@@ -432,7 +462,7 @@ def _parse_generic_whois(text: str) -> _WhoisParseResult:
     """Best-effort parser for whatever registry format shows up: tries
     several common field-label variants across real-world WHOIS output.
     There is no universal WHOIS schema, so this will not extract
-    everything for every registry — `complete` reflects that."""
+    everything for every registry. `complete` reflects that."""
     field_patterns = {
         "registrar": r"(?im)^(?:registrar|sponsoring registrar)\s*:\s*(.+)$",
         "created_at": (
@@ -462,16 +492,18 @@ def _parse_generic_whois(text: str) -> _WhoisParseResult:
     lowered = text.lower()
     redacted = "redact" in lowered or "privacy" in lowered or "not disclosed" in lowered
 
-    profile = DomainRegistrationProfile(
-        registered=True,
-        registrar=fields.get("registrar"),
-        created_at=_parse_date_generic(fields.get("created_at")),
-        updated_at=_parse_date_generic(fields.get("updated_at")),
-        expires_at=_parse_date_generic(fields.get("expires_at")),
-        registrant_country=fields.get("registrant_country"),
-        redacted=redacted,
-        status=statuses,
-        nameservers=nameservers,
+    profile = screen_registration(
+        DomainRegistrationProfile(
+            registered=True,
+            registrar=fields.get("registrar"),
+            created_at=_parse_date_generic(fields.get("created_at")),
+            updated_at=_parse_date_generic(fields.get("updated_at")),
+            expires_at=_parse_date_generic(fields.get("expires_at")),
+            registrant_country=fields.get("registrant_country"),
+            redacted=redacted,
+            status=statuses,
+            nameservers=nameservers,
+        )
     )
     complete = bool(
         profile.registrar and (profile.created_at or profile.expires_at) and profile.nameservers
@@ -481,8 +513,8 @@ def _parse_generic_whois(text: str) -> _WhoisParseResult:
 
 def _parse_sk_whois(text: str) -> _WhoisParseResult:
     """SK-NIC's format, verified against the live registry. Its "Created:"
-    label appears twice — once for the domain, once (further down) for
-    the registrant contact — `re.search` takes the first match, which is
+    label appears twice. Once for the domain, once (further down) for
+    the registrant contact. `re.search` takes the first match, which is
     the domain's, since it appears first in the response."""
 
     def field(label: str) -> str | None:
@@ -498,16 +530,18 @@ def _parse_sk_whois(text: str) -> _WhoisParseResult:
     nameservers = re.findall(r"(?im)^Nameserver\s*:\s*(\S+)", text)
     country = field("Country Code")
 
-    profile = DomainRegistrationProfile(
-        registered=True,
-        registrar=registrar,
-        created_at=created,
-        updated_at=updated,
-        expires_at=expires,
-        registrant_country=country,
-        redacted=False,  # SK-NIC publishes registrant data directly, unredacted
-        status=statuses,
-        nameservers=nameservers,
+    profile = screen_registration(
+        DomainRegistrationProfile(
+            registered=True,
+            registrar=registrar,
+            created_at=created,
+            updated_at=updated,
+            expires_at=expires,
+            registrant_country=country,
+            redacted=False,  # SK-NIC publishes registrant data directly, unredacted
+            status=statuses,
+            nameservers=nameservers,
+        )
     )
     complete = bool(registrar and created and nameservers)
     return _WhoisParseResult(profile=profile, complete=complete)
@@ -564,3 +598,4 @@ class WhoisProvider(Provider):
             fetched_at=datetime.now(UTC),
             partial=not parsed.complete,
         )
+

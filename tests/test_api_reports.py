@@ -1,5 +1,5 @@
 """Reports, IOC feed, and stats/overview endpoints: pure file reads and
-`ledgerhound.stats.compute_stats` wrapping — nothing computed here that
+`ledgerhound.stats.compute_stats` wrapping. Nothing computed here that
 isn't already computed by milestone 5's export layer or the shared
 stats module."""
 
@@ -182,3 +182,4 @@ def test_overview_includes_stats_and_recent_campaigns(
     body = response.json()
     assert "stats" in body
     assert body["recent_campaigns"][0]["code"] == "LH-2026-001"
+

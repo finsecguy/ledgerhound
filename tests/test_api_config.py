@@ -1,7 +1,7 @@
 """The config API: every route calls `ledgerhound.config_store` directly
 (no re-expressed validation), so a bad write gets the same 422 the CLI's
 `ConfigValidationError` produces, and a write via the API is immediately
-visible to a direct `config_store` read — the API and `lh config` share
+visible to a direct `config_store` read, the API and `lh config` share
 one store, not two copies of the truth."""
 
 from __future__ import annotations
@@ -91,3 +91,4 @@ def test_sources_domain_round_trips_the_full_list(api_client: TestClient) -> Non
     assert len(sources) == 1
     assert sources[0]["enabled"] is False
     assert sources[0]["cadence_minutes"] == 45
+

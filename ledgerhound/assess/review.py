@@ -8,17 +8,17 @@ State machine, per version row:
 
 `approve` is legal from "draft" or "in_review"; `reject` is legal from
 "draft", "in_review", or "approved" (an analyst revoking a prior
-approval after finding a problem); neither is legal from "rejected" —
+approval after finding a problem); neither is legal from "rejected"
 fixing a rejected version means editing or re-drafting to produce a new
 one, never resurrecting the old row. Approving an already-approved
-version, or a version that's already been rejected, is also illegal —
+version, or a version that's already been rejected, is also illegal
 both raise `IllegalTransitionError`.
 
 "Exactly one approved version per campaign" is enforced twice: the
 database has a partial unique index (`0006_assessments`) as the
 ultimate guarantee, and `approve_assessment` checks for an existing
 approved version first so a conflict produces a clear
-`AlreadyApprovedError` instead of an opaque `IntegrityError` — pass
+`AlreadyApprovedError` instead of an opaque `IntegrityError`. Pass
 `force=True` to explicitly supersede it (the old version is marked
 "rejected" with a note, never silently discarded).
 """
@@ -176,3 +176,4 @@ def render_diff(a: Assessment, b: Assessment) -> str:
     return "".join(
         difflib.unified_diff(a_lines, b_lines, fromfile=f"v{a.version}", tofile=f"v{b.version}")
     )
+

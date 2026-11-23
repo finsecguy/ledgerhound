@@ -1,6 +1,6 @@
 """Clustering configuration: relation weights and campaign thresholds,
 loaded from config/clustering.yaml. All defaults match the milestone
-spec; the file just makes them tunable without a code change — same
+spec; the file just makes them tunable without a code change, same
 pattern as `enrich/registry.py`'s `config/providers.yaml`.
 """
 
@@ -53,3 +53,4 @@ def load_clustering_config(path: Path = DEFAULT_CONFIG_PATH) -> ClusteringConfig
         return ClusteringConfig()
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     return ClusteringConfig.model_validate(raw)
+

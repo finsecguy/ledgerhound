@@ -17,7 +17,7 @@ one `CampaignEvent` row with the exact before/after member sets.
 Everything here is deterministic: candidate lists, component lists, and
 member lists are all sorted before being iterated or compared, and ties
 in Jaccard matching break on campaign code / component's lowest member
-id — the same database state produces the same campaigns and the same
+id, the same database state produces the same campaigns and the same
 ids on every run.
 """
 
@@ -143,7 +143,7 @@ def _create_campaign(
         session.add(
             CampaignMember(campaign_id=campaign.id, indicator_id=indicator_id, joined_at=now)
         )
-    # This session runs with autoflush=False (see db/session.py) — without
+    # This session runs with autoflush=False (see db/session.py), without
     # an explicit flush here, these CampaignMember rows stay invisible to
     # any query issued later in the same run (e.g.
     # _refresh_campaign_statuses' membership lookup), which would then
@@ -225,7 +225,7 @@ def _match_and_persist_campaigns(
     # Mutual-best-match, both directions. Inclusive (>=), not strict: two
     # equal-sized campaigns merging fully (e.g. {A,B} and {C,D} both
     # becoming {A,B,C,D}) lands exactly on Jaccard 0.5 with the default
-    # threshold — that's the single most natural merge case there is, so
+    # threshold. That's the single most natural merge case there is, so
     # the boundary has to count, the same reasoning as the campaign score
     # threshold above.
     new_best: dict[int, tuple[float, UUID] | None] = {}
@@ -407,7 +407,7 @@ def run_clustering(
         score, relation_types = score_component(graph, component, config.campaign)
         # Inclusive: a single shares_receiving_wallet edge (weight 1.0)
         # between exactly two nodes scores exactly at the default
-        # threshold (1.0 / 2 nodes = 0.5) — the strongest single relation
+        # threshold (1.0 / 2 nodes = 0.5), the strongest single relation
         # this pipeline has must be able to form a campaign on its own,
         # so the boundary itself has to qualify, not just fall short of it.
         if score >= config.campaign.score_threshold:
@@ -435,3 +435,4 @@ def run_clustering(
     )
     logger.info("cluster_run_complete", **asdict(result))
     return result
+

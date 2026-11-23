@@ -1,6 +1,6 @@
 """Bitcoin address enrichment: mempool.space primary, blockstream.info
 fallback. Both are Esplora-API deployments with byte-for-byte identical
-response shapes, which makes this the cleanest possible fallback pair —
+response shapes, which makes this the cleanest possible fallback pair
 losing mempool.space costs nothing but hostname.
 
 Esplora's `/address/{addr}/txs` endpoint returns only the most recent
@@ -9,7 +9,7 @@ an address's *first* transaction; getting there requires paginating
 backward via `/address/{addr}/txs/chain/{last_seen_txid}`. For a
 low-activity scam address (the common case here) a handful of pages
 covers full history. For a high-activity address, chasing every page
-would mean thousands of requests — so this is bounded to a small number
+would mean thousands of requests, so this is bounded to a small number
 of pages, and `first_seen_onchain`/counterparty totals are marked
 `partial=True` whenever the address has more transactions than the pages
 fetched actually covered.
@@ -168,3 +168,4 @@ class BlockstreamProvider(_EsploraProvider):
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(base_url="https://blockstream.info/api", **kwargs)
+

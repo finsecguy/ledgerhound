@@ -1,4 +1,4 @@
-"""Campaign list/detail/rename. Presentational queries only — no
+"""Campaign list/detail/rename. Presentational queries only, no
 clustering, scoring, or evidence-pack logic lives here (see the module
 docstring in `ledgerhound/api/__init__.py`)."""
 
@@ -174,3 +174,4 @@ def update_display_name(
     campaign.display_name = body.display_name
     session.flush()
     return _build_campaign_detail(session, campaign)
+

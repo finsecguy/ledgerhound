@@ -6,7 +6,7 @@ model; `runtime` covers the handful of `Settings` fields worth changing
 without a redeploy (the assessment-drafting LLM backend, the default TLP
 marking, enrichment concurrency/TTL). A domain's row in
 `config_overrides` (see `db/models.py`) takes precedence the moment it
-exists — `set_config` validates and writes it, taking effect on the very
+exists. `set_config` validates and writes it, taking effect on the very
 next read, no restart; `reset_config` deletes the row, reverting to that
 domain's file/env default.
 
@@ -14,7 +14,7 @@ domain's file/env default.
 both are needed before this table can be reached (or before there's
 anywhere to log to), so they stay `.env`-only. Filesystem paths
 (`*_config_path`, `*_cache_path`, `export_output_path`, `reports_path`)
-and HTTP retry tuning stay `.env`-only too — server-local paths and
+and HTTP retry tuning stay `.env`-only too. Server-local paths and
 low-level retry knobs aren't what a GUI settings page is for.
 """
 
@@ -116,8 +116,8 @@ def get_runtime_config(session: Session) -> RuntimeConfig:
 
 
 def get_config(session: Session, domain: Domain) -> BaseModel:
-    """The effective value for `domain` — its override if one exists,
-    otherwise its file/env default — as that domain's whole pydantic
+    """The effective value for `domain`, its override if one exists,
+    otherwise its file/env default, as that domain's whole pydantic
     model (matching the shape `set_config` expects back)."""
     if domain == "sources":
         return SourcesConfig(sources=get_sources_config(session))
@@ -129,7 +129,7 @@ def get_config(session: Session, domain: Domain) -> BaseModel:
 
 
 def list_config(session: Session) -> dict[Domain, tuple[BaseModel, bool]]:
-    """Every domain's (effective value, is_overridden) pair — what a
+    """Every domain's (effective value, is_overridden) pair. What a
     `lh config show` or the dashboard Settings page renders."""
     return {
         domain: (get_config(session, domain), is_overridden(session, domain)) for domain in DOMAINS
@@ -140,7 +140,7 @@ def set_config(
     session: Session, domain: Domain, raw: dict[str, Any], *, updated_by: str | None = None
 ) -> BaseModel:
     """Validate `raw` against `domain`'s schema and persist it as that
-    domain's override, taking effect on the very next read — no restart,
+    domain's override, taking effect on the very next read, no restart,
     no file write. Nothing is written if validation fails."""
     model = _model_for(domain)
     try:
@@ -165,3 +165,4 @@ def reset_config(session: Session, domain: Domain) -> None:
     if row is not None:
         session.delete(row)
         session.flush()
+

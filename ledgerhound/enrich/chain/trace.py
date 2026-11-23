@@ -4,13 +4,13 @@ Breadth-first from a root address, following only *outbound* value
 (where the scam's proceeds went), for a bounded number of hops. Depth 2
 is the default because the stop conditions below are usually enough to
 reach a real sink (an exchange, mixer, or bridge) within two hops of a
-scam wallet — a scammer typically moves funds through one or two
+scam wallet, a scammer typically moves funds through one or two
 intermediate "peeling" addresses before cashing out somewhere
 recognizable. Depth is configurable per call up to a hard ceiling so a
 pathological or mislabeled address can't trigger unbounded traversal.
 
-Every cap this tracer hits — breadth truncation, the depth ceiling, an
-address it's already seen in this trace — is recorded in the output.
+Every cap this tracer hits. Breadth truncation, the depth ceiling, an
+address it's already seen in this trace. Is recorded in the output.
 `TraceResult.summary.truncated` exists specifically so a report generated
 from this data can say "coverage may be incomplete" instead of silently
 implying it traced everything.
@@ -32,7 +32,7 @@ DEFAULT_DEPTH = 2
 DEFAULT_BREADTH = 25
 HARD_DEPTH_CEILING = 5
 
-#: Label types that stop a trace from expanding further — the funds have
+#: Label types that stop a trace from expanding further, the funds have
 #: reached a recognizable sink or a legally significant endpoint, not
 #: just another indicator. `scam` is deliberately excluded: it marks
 #: another known-bad address, not a place funds terminate.
@@ -71,7 +71,7 @@ class TraceSummary:
     terminal_counts: dict[str, int]
     truncated: bool
     #: True if any node could not be expanded because no provider in its
-    #: facet's chain was available — a data-availability gap, distinct
+    #: facet's chain was available, a data-availability gap, distinct
     #: from a deliberate breadth/depth cap.
     incomplete_due_to_provider_failure: bool
 
@@ -221,7 +221,7 @@ class Tracer:
 
         # A node terminated by hitting the depth ceiling (rather than by a
         # real stop-condition label) is exactly the case where the trace
-        # would have kept going if allowed to — that's truncation.
+        # would have kept going if allowed to. That's truncation.
         if terminal_counts.get("max_depth", 0) > 0:
             truncated = True
 
@@ -239,3 +239,4 @@ class Tracer:
                 incomplete_due_to_provider_failure=incomplete,
             ),
         )
+

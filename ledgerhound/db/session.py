@@ -14,6 +14,7 @@ from functools import lru_cache
 
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from ledgerhound.settings import get_settings
 
@@ -21,7 +22,18 @@ from ledgerhound.settings import get_settings
 @lru_cache(maxsize=1)
 def get_engine() -> Engine:
     settings = get_settings()
-    return create_engine(settings.database_url, pool_pre_ping=True, future=True)
+    url = settings.database_url
+    # The dashboard can serve a local SQLite file (the sanitised example
+    # does). Sync FastAPI handlers run in a worker thread, so the default
+    # SQLite check_same_thread guard would reject those requests.
+    if url.startswith("sqlite"):
+        return create_engine(
+            url,
+            future=True,
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
+        )
+    return create_engine(url, pool_pre_ping=True, future=True)
 
 
 @lru_cache(maxsize=1)
