@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 // (FastAPI on 8000) so the browser only ever talks to one origin and
 // relative fetch("/api/...") calls work identically in dev and prod.
 // Prod: `npm run build` emits dist/, served by FastAPI itself at "/"
-// (see ledgerhound/api/main.py) — no proxy needed there, same origin.
+// (see ledgerhound/api/main.py), no proxy needed there, same origin.
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -21,3 +21,4 @@ export default defineConfig({
     outDir: "dist",
   },
 });
+

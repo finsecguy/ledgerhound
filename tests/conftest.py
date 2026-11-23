@@ -22,7 +22,7 @@ def _ensure_stix2validator_schemas() -> None:
     directory it bundles upstream (a git submodule that isn't vendored
     into the sdist/wheel), so *every* validation call fails with
     "Cannot locate a schema for the object's type" regardless of the
-    `-s`/`schema_dir` option — that option only adds extra schemas, it
+    `-s`/`schema_dir` option. That option only adds extra schemas, it
     doesn't replace the missing built-in default lookup. Self-heals by
     copying our vendored copy (`tests/fixtures/stix2_schemas/`, pulled
     from `oasis-open/cti-stix2-json-schemas`) into the exact path the
@@ -57,7 +57,7 @@ def db_session() -> Iterator[Session]:
 
     `StaticPool` + `check_same_thread=False`: FastAPI's TestClient runs
     sync endpoint handlers in a worker thread, and plain sqlite3 refuses
-    to touch a connection from any thread but the one that opened it —
+    to touch a connection from any thread but the one that opened it
     without this, an API test that seeds via this fixture and then calls
     the API in the same test fails with "SQLite objects created in a
     thread can only be used in that same thread." Safe here since
@@ -82,7 +82,7 @@ def db_session() -> Iterator[Session]:
 @pytest.fixture()
 def api_client(db_session: Session) -> Iterator[TestClient]:
     """A FastAPI TestClient wired to the same in-memory `db_session` a
-    test seeds directly — the API's `get_session` dependency is
+    test seeds directly, the API's `get_session` dependency is
     overridden rather than pointed at a real file, so API tests share
     the exact seeding helpers/patterns the CLI-facing tests already use."""
     from ledgerhound.api.deps import get_session
@@ -104,7 +104,7 @@ def attack_cache(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Pa
     pointed at it, for any test exercising a code path that resolves
     `settings.attack_stix_cache_path` (the assessment-edit/draft API
     endpoints unconditionally load it, matching the CLI's own
-    `lh assess edit`) — never a real network fetch. `get_settings` is
+    `lh assess edit`). Never a real network fetch. `get_settings` is
     `lru_cache`d process-wide, so it's explicitly cleared on both sides
     of the env var change or the new path would never actually be seen.
     """
@@ -133,3 +133,4 @@ def attack_cache(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Pa
 
 def load_fixture(name: str) -> str:
     return (FIXTURES_DIR / name).read_text(encoding="utf-8")
+

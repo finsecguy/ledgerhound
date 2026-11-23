@@ -3,7 +3,7 @@
 Multiple relations between the same pair of indicators (e.g. they share
 both a receiving wallet and a registrar/NS set) become multiple entries
 in that single graph edge's `relations` attribute, not parallel graph
-edges — connectivity is what defines a component; which specific
+edges. Connectivity is what defines a component; which specific
 relation(s) carried it is scoring/evidence data, read off the edge
 attribute by `cluster.scoring`.
 """
@@ -59,7 +59,7 @@ class DirectEdge:
 class ExplainResult:
     """Why one indicator belongs to its campaign: its direct edges plus
     a path to the campaign's deterministic reference member (lowest-id,
-    for context on larger campaigns) — the answer `lh cluster explain`
+    for context on larger campaigns), the answer `lh cluster explain`
     and the dashboard's explain endpoint both need, computed once here
     so they can never disagree."""
 
@@ -130,3 +130,4 @@ def explain_indicator(session: Session, indicator_id: UUID, campaign_id: UUID) -
         reference_id=reference_id,
         path_to_reference=path_to_reference,
     )
+

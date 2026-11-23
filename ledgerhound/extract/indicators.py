@@ -1,6 +1,6 @@
 """Indicator extraction: find candidate IOC strings and *validate* them.
 
-Regex alone produces garbage — plenty of random-looking base58/hex strings
+Regex alone produces garbage. Plenty of random-looking base58/hex strings
 match an address's shape without being one. Every extractor here pairs a
 regex (to find candidates) with real validation (checksum, structural, or
 decode checks) before anything is accepted as an indicator.
@@ -61,7 +61,7 @@ class ExtractedIndicator:
 @dataclass(slots=True)
 class ExtractionResult:
     indicators: list[ExtractedIndicator] = field(default_factory=list)
-    #: Bare tokens that looked like domains but were actually IP literals —
+    #: Bare tokens that looked like domains but were actually IP literals
     #: kept for visibility/logging, deliberately not stored as indicators.
     rejected_ips: list[str] = field(default_factory=list)
 
@@ -227,7 +227,7 @@ def _extract_urls_and_domains(text: str) -> tuple[list[ExtractedIndicator], list
         if any(cs <= start and end <= ce for cs, ce in consumed_spans):
             continue  # already covered by a full URL match
         if any(cs <= start and end <= ce for cs, ce in ip_spans):
-            continue  # bare IP literal, not a domain — tracked in rejected_ips above
+            continue  # bare IP literal, not a domain. Tracked in rejected_ips above
         candidate = match.group()
         canonical = canonicalize_domain(candidate)
         if not is_valid_domain_label_set(canonical):
@@ -301,3 +301,4 @@ def extract_from_payload(payload: Any) -> ExtractionResult:
                 merged.indicators.append(indicator)
         merged.rejected_ips.extend(partial.rejected_ips)
     return merged
+

@@ -1,17 +1,17 @@
 """shares_cashout_path: two chain-address indicators whose downstream
 fund-flow traces (`lh trace`) both reach the same *labeled* terminal
-address — a shared cash-out destination.
+address, a shared cash-out destination.
 
-Only labeled terminals count (exchange/mixer/bridge/sanctioned) — a node
+Only labeled terminals count (exchange/mixer/bridge/sanctioned), a node
 that's terminal purely because it hit the depth ceiling (`max_depth`)
 isn't evidence of anything, it's just where the trace happened to stop.
 Per the milestone's exclusion rule, the terminal address itself is never
-a graph node — it appears only in this edge's evidence.
+a graph node. It appears only in this edge's evidence.
 
 Reads whatever trace runs already exist in `traces`/`trace_nodes`
 (populated by `lh trace`, persisted since milestone 3 fixed a gap left by
-milestone 2). This relation does not — and, per the "clustering must be
-deterministic, no network" constraint, must not — trigger new traces.
+milestone 2). This relation does not, and, per the "clustering must be
+deterministic, no network" constraint, must not. Trigger new traces.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from ledgerhound.cluster.relations.base import EdgeCandidate, Relation, sorted_p
 from ledgerhound.db.models import Trace, TraceNodeRow
 
 #: A node terminal only because the trace hit its depth ceiling isn't a
-#: cash-out destination — it's just where we stopped looking.
+#: cash-out destination. It's just where we stopped looking.
 _CASHOUT_TERMINAL_REASONS = {"exchange", "mixer", "bridge", "sanctioned"}
 
 
@@ -113,3 +113,4 @@ class SharesCashoutPathRelation(Relation):
                         "hop_from_dst": hop_by_root[dst_id],
                     },
                 )
+

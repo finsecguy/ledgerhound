@@ -1,6 +1,6 @@
 """FastAPI dependencies: a per-request DB session.
 
-Reuses `db/session.py`'s process-wide engine/sessionmaker — the API
+Reuses `db/session.py`'s process-wide engine/sessionmaker, the API
 process and the CLI share the exact same database connection setup, no
 separate config path.
 """
@@ -15,7 +15,7 @@ from ledgerhound.db.session import get_sessionmaker
 
 
 def get_session() -> Iterator[Session]:
-    """Commit on a clean response, roll back on any exception — the same
+    """Commit on a clean response, roll back on any exception, the same
     semantics as `db.session.session_scope`, adapted to FastAPI's
     generator-dependency lifecycle."""
     session = get_sessionmaker()()
@@ -27,3 +27,4 @@ def get_session() -> Iterator[Session]:
         raise
     finally:
         session.close()
+

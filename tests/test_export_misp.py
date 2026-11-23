@@ -2,7 +2,7 @@
 module docstring in `export/misp.py` for what was checked against
 upstream MISP data and how), and a small MISP-feed parser fixture that
 loads `manifest.json` + per-event files + `hashes.csv` back and checks
-they're mutually consistent — standing in for "loads in a MISP feed
+they're mutually consistent. Standing in for "loads in a MISP feed
 parser" without adding a PyMISP dependency just for this."""
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ def _valid_draft(**overrides: Any) -> dict[str, Any]:
 
 def _load_misp_feed(out_dir: Path) -> dict[str, Any]:
     """A minimal "MISP feed parser": reads manifest.json + every
-    referenced event file + hashes.csv, and checks they agree — the
+    referenced event file + hashes.csv, and checks they agree, the
     shape any real MISP feed consumer relies on."""
     manifest = json.loads((out_dir / "manifest.json").read_text())
     events: dict[str, Any] = {}
@@ -175,3 +175,4 @@ def test_misp_feed_loads_with_the_parser_fixture(db_session: Session, tmp_path: 
     loaded = _load_misp_feed(out_dir)
     assert len(loaded["manifest"]) == 2
     assert len(loaded["events"]) == 2
+

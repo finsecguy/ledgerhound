@@ -4,7 +4,7 @@
    reserved strictly for literal data an analyst would copy verbatim
    (addresses, hashes, technique ids, campaign codes). Confidence is
    rendered as visual weight (see .confidence below), never a status
-   color — see README "Dashboard" for the reasoning. */
+   color. See README "Dashboard" for the reasoning. */
 
 :root {
   --ink: #161310;
@@ -196,7 +196,7 @@ h4 {
   border-color: var(--line-strong);
 }
 
-/* A flowing document section — used where content is read like prose
+/* A flowing document section. Used where content is read like prose
    (an assessment's narrative fields), not boxed like a functional
    panel. A rule below, not a border all around: the point is that not
    every piece of content deserves identical structural weight. */
@@ -223,7 +223,7 @@ h4 {
   margin-bottom: 20px;
 }
 
-/* A single dominant figure — used once per page, at most, for the one
+/* A single dominant figure. Used once per page, at most, for the one
    number that matters most (e.g. Overview's total indicator count).
    Not a grid of equally-weighted stat-cards. */
 .lead-metric__value {
@@ -494,7 +494,7 @@ button.ghost:hover {
 }
 
 /* --- Entity graph: the product's hero artifact --- */
-/* Deliberately borderless/unboxed — everything else on the campaign
+/* Deliberately borderless/unboxed. Everything else on the campaign
    detail page is visually quieter than this by construction. */
 .hero-graph {
   border-bottom: 1px solid var(--line);
@@ -511,7 +511,7 @@ button.ghost:hover {
 }
 
 /* Evidence: a docked side panel, not a card of equal weight to the
-   graph it explains — a thin rule instead of a full border. */
+   graph it explains, a thin rule instead of a full border. */
 .evidence-dock {
   border-left: 1px solid var(--line);
   padding-left: 16px;
@@ -523,7 +523,7 @@ button.ghost:hover {
 
 /* --- Review action bar --- */
 /* A heavier rule + a sentence of consequence ahead of an irreversible
-   action (approve/reject) — not a blocking modal, just enough weight
+   action (approve/reject), not a blocking modal, just enough weight
    that it doesn't feel like a plain form submit. */
 .review-bar {
   border-top: 2px solid var(--line-strong);
@@ -567,3 +567,4 @@ button.ghost:hover {
   border-radius: var(--radius-sm);
   overflow-x: auto;
 }
+

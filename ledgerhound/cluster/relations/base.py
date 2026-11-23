@@ -1,6 +1,6 @@
 """Relation detector abstraction.
 
-A `Relation` reads projection tables (never the network — clustering
+A `Relation` reads projection tables (never the network. Clustering
 must be deterministic, per the milestone's constraints) and emits
 `EdgeCandidate`s. Evidence is a structured dict specific to the relation
 and must be sufficient to reproduce the finding by hand, since a report
@@ -40,7 +40,7 @@ class LabelIndex:
     for the "exchange/mixer addresses can't act as a linking node" rule.
 
     Loaded from whatever's already on disk (the OFAC cache file written
-    by `lh enrich`, the bundled known-addresses dataset) — clustering
+    by `lh enrich`, the bundled known-addresses dataset). Clustering
     never makes a network call, so a missing/stale cache just means this
     exclusion check sees less data, not a failure.
     """
@@ -61,7 +61,7 @@ class LabelIndex:
 
     def is_excluded_linking_node(self, chain: Chain, address: str) -> bool:
         """Exchange/mixer addresses are excluded from acting as a linking
-        node between two indicators — two unrelated scams both cashing
+        node between two indicators, two unrelated scams both cashing
         out at the same exchange deposit cluster are not the same
         campaign. Bridges and sanctioned addresses are NOT excluded here
         (only `shares_cashout_path` deals with those, as evidence only,
@@ -88,7 +88,7 @@ def load_label_index(
 
 def sorted_pairs(indicator_ids: Iterable[UUID]) -> list[tuple[UUID, UUID]]:
     """Every distinct pair from a group of indicator ids that share some
-    evidence, in a stable order — sorted by string form, since UUIDs
+    evidence, in a stable order. Sorted by string form, since UUIDs
     don't have a meaningful numeric ordering but need *some* fixed one
     for determinism across runs."""
     distinct = sorted(set(indicator_ids), key=str)
@@ -110,8 +110,9 @@ class Relation(ABC):
         """Read projection tables and emit candidate edges.
 
         Must be side-effect free (no writes, no network) and must
-        iterate its inputs in a deterministic (sorted) order — clustering
+        iterate its inputs in a deterministic (sorted) order. Clustering
         as a whole must produce byte-identical output for the same
         database state on every run.
         """
         raise NotImplementedError
+

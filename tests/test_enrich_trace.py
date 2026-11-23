@@ -1,7 +1,7 @@
 """Fund-flow tracer tests: depth respected, breadth cap truncates and sets
 the flag, cycles terminate without re-expansion, and stop-condition labels
 halt expansion at the labeled node. All against a fake in-memory Provider
-graph — no network."""
+graph, no network."""
 
 from __future__ import annotations
 
@@ -129,7 +129,7 @@ async def test_trace_stops_at_labeled_terminal_node_and_does_not_expand_past_it(
 
 
 async def test_trace_scam_label_does_not_halt_expansion() -> None:
-    """`scam` marks another known-bad address, not a fund sink — tracing
+    """`scam` marks another known-bad address, not a fund sink. Tracing
     must continue past it, unlike exchange/mixer/bridge/sanctioned."""
     graph = {
         "root": [("scam_addr", 100)],
@@ -149,3 +149,4 @@ async def test_trace_scam_label_does_not_halt_expansion() -> None:
 
     addresses = {n.address for n in result.nodes}
     assert "downstream" in addresses
+

@@ -19,7 +19,7 @@ interface CampaignFeedDetail {
 
 /** Best-effort reversal of the backend's own defanging convention
  * (`extract/normalize.py`'s `defang`: http(s) -> hxxp(s), "." -> "[.]")
- * — display-only, client-side, for the toggle below. The exported files
+ *. Display-only, client-side, for the toggle below. The exported files
  * themselves are static (whichever mode `lh export feed` last ran in);
  * this never touches them. */
 function refang(value: string): string {
@@ -35,7 +35,7 @@ async function fetchCampaignFeedDetail(code: string): Promise<CampaignFeedDetail
 }
 
 /** Lists published campaigns from the static IOC feed index
- * (`published/feed/feed.json`, written by `lh export feed`) — not the
+ * (`published/feed/feed.json`, written by `lh export feed`), not the
  * live database, so a campaign only appears here once it's actually
  * been exported. */
 export default function FeedBrowser(): React.JSX.Element {
@@ -65,7 +65,7 @@ export default function FeedBrowser(): React.JSX.Element {
         <h1 className="page-title">IOC Feed</h1>
         <div className="callout callout--info">
           {isNotFound
-            ? "No IOC feed has been exported yet — run `lh export feed`."
+            ? "No IOC feed has been exported yet. Run `lh export feed`."
             : "Failed to load the feed."}
         </div>
       </div>
@@ -156,3 +156,4 @@ export default function FeedBrowser(): React.JSX.Element {
     </div>
   );
 }
+

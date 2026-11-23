@@ -3,7 +3,7 @@
 score = (sum of edge weights in the component / node count) + a
 diversity bonus when more than one relation type corroborates the
 component. A component whose *only* relation is `shares_registrar_and_ns`
-scores exactly 0 — enforced here, explicitly, not left to the weight
+scores exactly 0. Enforced here, explicitly, not left to the weight
 being low enough to usually fall under the threshold.
 """
 
@@ -45,7 +45,7 @@ def score_component(
 ) -> tuple[float, set[str]]:
     """Returns (score, relation_types). `relation_types` is returned
     alongside the score because callers persist it as evidence on the
-    `Campaign` row — it's the answer to "why does this cluster exist."
+    `Campaign` row. It's the answer to "why does this cluster exist."
     """
     relation_types = component_relation_types(graph, component)
 
@@ -60,3 +60,4 @@ def score_component(
     if len(relation_types) > 1:
         score += config.diversity_bonus
     return score, relation_types
+

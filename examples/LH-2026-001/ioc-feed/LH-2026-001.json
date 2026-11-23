@@ -1,0 +1,28 @@
+{
+  "campaign": "LH-2026-001",
+  "display_name": "SANITISED EXAMPLE",
+  "indicator_count": 3,
+  "indicators": [
+    {
+      "first_seen": "2026-06-01T12:00:00+00:00",
+      "last_seen": "2026-06-01T12:00:00+00:00",
+      "type": "eth_address",
+      "value": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"
+    },
+    {
+      "first_seen": "2026-06-01T12:00:01+00:00",
+      "last_seen": "2026-06-01T12:00:01+00:00",
+      "type": "eth_address",
+      "value": "0x3333333333333333333333333333333333333333"
+    },
+    {
+      "first_seen": "2026-06-01T12:00:02+00:00",
+      "last_seen": "2026-06-01T12:00:02+00:00",
+      "type": "eth_address",
+      "value": "0x1111111111111111111111111111111111111111"
+    }
+  ],
+  "last_seen": "2026-06-01T12:00:00+00:00",
+  "status": "active",
+  "summary": "SANITISED EXAMPLE. This campaign is a portfolio fixture, not a real cluster. The lures use wallet-support.example, claim-drop.example, and restore-login.example."
+}

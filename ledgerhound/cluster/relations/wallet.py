@@ -1,5 +1,5 @@
 """shares_receiving_wallet: two chain-address indicators that both sent
-value out to the same third-party counterparty — a shared collection/
+value out to the same third-party counterparty, a shared collection/
 receiving wallet suggests the same actor controls both.
 
 The shared wallet itself is excluded as a linking node when it's a known
@@ -77,3 +77,4 @@ class SharesReceivingWalletRelation(Relation):
                         "dst_raw_report_ids": _raw_report_ids(session, dst_id),
                     },
                 )
+

@@ -1,7 +1,7 @@
 """Drafting: the LLM call is always mocked (a fake `AssessmentLLM.draft`
 returning a canned dict, exactly the shape any real backend's adapter
 would hand back), and every hard constraint from the milestone spec is
-checked with a fixture that violates exactly one of them — a validation
+checked with a fixture that violates exactly one of them, a validation
 failure must persist nothing."""
 
 from __future__ import annotations
@@ -313,3 +313,4 @@ def test_draft_rejects_mismatched_inflow_total(
         )
     assert any("does not match" in e for e in exc_info.value.errors)
     assert _assessment_count(db_session, campaign_with_evidence) == 0
+

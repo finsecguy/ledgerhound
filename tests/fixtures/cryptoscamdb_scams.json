@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "result": [
+    {
+      "id": 9001,
+      "name": "SANITISED EXAMPLE",
+      "url": "https://wallet-support.example/restore",
+      "category": "Phishing",
+      "subcategory": "Wallet",
+      "description": "Synthetic fixture. Not a real report.",
+      "addresses": ["0x1111111111111111111111111111111111111111"],
+      "reporter": "fixture",
+      "status": "Offline"
+    },
+    {
+      "id": 9002,
+      "name": "SANITISED EXAMPLE dict addresses",
+      "url": "http://claim-drop.example/",
+      "category": "Phishing",
+      "addresses": {
+        "ETH": ["0x2222222222222222222222222222222222222222"],
+        "BTC": "1111111111111111111114oLvT2"
+      },
+      "status": "Active"
+    },
+    {
+      "id": "not-a-record",
+      "url": 12
+    },
+    {
+      "name": "no indicators"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 """OFAC SDN list: sanctioned digital currency addresses.
 
 Pulls the U.S. Treasury's Specially Designated Nationals list (published
-as a redirect to a presigned S3 URL — `http_request`'s retry wrapper
+as a redirect to a presigned S3 URL. `http_request`'s retry wrapper
 follows it via `follow_redirects=True`), extracts every "Digital Currency
 Address - <CURRENCY>" identification for the four chains Ledgerhound
 tracks, and caches the raw XML locally so a scheduler run doesn't re-pull
@@ -186,3 +186,4 @@ class OFACSource:
         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
         self.cache_path.write_bytes(response.content)
         self.log.info("ofac_sdn_refreshed", num_bytes=len(response.content), url=SDN_URL)
+

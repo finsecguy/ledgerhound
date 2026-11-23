@@ -140,7 +140,7 @@ export default function AssessmentReview(): React.JSX.Element {
             <StatusBadge status={assessment.status} />
             {assessment.stale && (
               <span className="badge badge--stale" title="Evidence has changed since approval">
-                stale — re-review before publishing
+                stale. Re-review before publishing
               </span>
             )}
             <span className="page-subtitle">v{assessment.version}</span>
@@ -154,7 +154,7 @@ export default function AssessmentReview(): React.JSX.Element {
           >
             {versions.map((v) => (
               <option key={v.version} value={v.version}>
-                v{v.version} — {v.status}
+                v{v.version}: {v.status}
               </option>
             ))}
           </select>
@@ -251,7 +251,7 @@ export default function AssessmentReview(): React.JSX.Element {
                   {(assessment.draft.ttps ?? []).map((ttp, index) => (
                     <tr key={index}>
                       <td className="mono">
-                        {ttp.technique_id} — {ttp.technique_name}
+                        {ttp.technique_id}: {ttp.technique_name}
                       </td>
                       <td>{ttp.observation}</td>
                     </tr>
@@ -323,7 +323,7 @@ export default function AssessmentReview(): React.JSX.Element {
               <div className="review-bar">
                 <p className="review-bar__consequence">
                   Approving publishes this as the campaign's official assessment. Rejecting closes
-                  this version out — a new draft is needed to try again. Both require review notes.
+                  this version out, a new draft is needed to try again. Both require review notes.
                 </p>
                 <div className="row">
                   <button
@@ -358,3 +358,4 @@ export default function AssessmentReview(): React.JSX.Element {
     </div>
   );
 }
+

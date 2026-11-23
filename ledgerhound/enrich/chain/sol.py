@@ -1,7 +1,7 @@
 """Solana address enrichment: two independent public JSON-RPC endpoints.
 
-Unlike Ethereum, Solana's own RPC exposes `getSignaturesForAddress` — a
-real address-history method, no separate indexer needed — so both
+Unlike Ethereum, Solana's own RPC exposes `getSignaturesForAddress`, a
+real address-history method, no separate indexer needed, so both
 providers here are plain JSON-RPC and both give the full picture. That
 makes this the one chain where two *actually equivalent* keyless
 providers were available, rather than a rich-primary/thin-fallback pair.
@@ -12,7 +12,7 @@ and there's no single correct answer for "who is the counterparty" the
 way there is for a simple two-party BTC/ETH transfer. For each inspected
 transaction we take the target address's own balance delta (exact, from
 `preBalances`/`postBalances`) and attribute it to whichever other
-non-program account moved the largest opposite-signed amount — a
+non-program account moved the largest opposite-signed amount, a
 reasonable guess for simple transfers, a rough one for complex DeFi
 transactions. Always marked `partial=True` for this reason.
 """
@@ -38,7 +38,7 @@ _MAX_TX_INSPECTED = 15
 _SIGNATURES_PAGE_LIMIT = 1000
 
 #: Well-known program/system accounts excluded from counterparty
-#: attribution — a balance delta on one of these is a fee/rent artifact,
+#: attribution, a balance delta on one of these is a fee/rent artifact,
 #: not a meaningful counterparty.
 _PROGRAM_IDS = {
     "11111111111111111111111111111111",
@@ -178,3 +178,4 @@ class PublicNodeSolProvider(_SolanaRpcProvider):
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(rpc_url="https://solana-rpc.publicnode.com", **kwargs)
+

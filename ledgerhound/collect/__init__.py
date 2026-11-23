@@ -17,6 +17,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ledgerhound.collect.base import Collector
+from ledgerhound.collect.cryptoscamdb import CryptoScamDBCollector
 from ledgerhound.collect.scamsniffer import ScamSnifferCollector
 from ledgerhound.collect.urlhaus import URLhausCollector
 from ledgerhound.db.models import Source, SourceType
@@ -32,6 +33,7 @@ __all__ = [
 REGISTRY: dict[str, type[Collector]] = {
     ScamSnifferCollector.name: ScamSnifferCollector,
     URLhausCollector.name: URLhausCollector,
+    CryptoScamDBCollector.name: CryptoScamDBCollector,
 }
 
 

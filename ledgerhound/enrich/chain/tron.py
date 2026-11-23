@@ -1,7 +1,7 @@
 """TRON address enrichment: TronGrid primary, Tronscan fallback.
 
 Both cover balance, tx count, and (best-effort) native-TRX counterparties.
-Counterparty/value extraction is scoped to native TRX transfers only —
+Counterparty/value extraction is scoped to native TRX transfers only
 TRC20/TRC10 token transfers show up in an address's transaction list but
 don't move native TRX value, and this milestone's `ChainAddressProfile`
 has no per-token breakdown. A wallet whose activity is mostly token
@@ -133,7 +133,7 @@ class TronGridProvider(Provider):
             normalized=profile,
             fetched_at=datetime.now(UTC),
             # We only ever fetched a bounded number of pages, and only
-            # native TransferContract entries contribute counterparties —
+            # native TransferContract entries contribute counterparties
             # a wallet dominated by token transfers is always partial.
             partial=True,
         )
@@ -236,3 +236,4 @@ class TronscanProvider(Provider):
             fetched_at=datetime.now(UTC),
             partial=True,
         )
+

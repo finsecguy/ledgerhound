@@ -1,5 +1,5 @@
 """GUI/CLI-shared config: every domain's effective value (its override,
-if `lh config set` or this router's PUT has ever been used — otherwise
+if `lh config set` or this router's PUT has ever been used. Otherwise
 its file/env default), plus endpoints to change or reset it. Every
 read/write here calls the exact same `ledgerhound.config_store`
 functions `lh config` does, so the CLI and the dashboard's Settings page
@@ -56,3 +56,4 @@ def reset_config_domain(
 ) -> ConfigDomainOut:
     config_store.reset_config(session, domain)
     return _domain_out(session, domain)
+

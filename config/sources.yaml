@@ -6,8 +6,9 @@
 # the concrete fetch endpoint(s) are owned by the collector implementation.
 # `reliability_grade` follows the NATO/Admiralty source-reliability scale
 # (A = completely reliable ... F = reliability cannot be judged). These feeds
-# are automated, unvetted, community-maintained blocklists, so none of them
-# earn better than "usually reliable" (B) out of the box.
+# are automated or community-maintained blocklists. ScamSniffer and URLhaus
+# are graded B (usually reliable). CryptoScamDB is graded C (fairly
+# reliable): entries are community submissions with lighter review.
 sources:
   - name: scamsniffer
     type: phishing_feed
@@ -21,4 +22,11 @@ sources:
     url: https://urlhaus.abuse.ch/
     cadence_minutes: 15
     reliability_grade: B
+    enabled: true
+
+  - name: cryptoscamdb
+    type: phishing_feed
+    url: https://api.cryptoscamdb.org/v1/scams
+    cadence_minutes: 360
+    reliability_grade: C
     enabled: true

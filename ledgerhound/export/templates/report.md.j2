@@ -1,6 +1,7 @@
-# 1. {{ campaign.code }} — {{ campaign.display_name or campaign.code }}
+# 1. {{ campaign.code }}: {{ campaign.display_name or campaign.code }}
 
 - **Date:** {{ generated_at.date().isoformat() if generated_at else "unknown" }}
+- **Author:** {{ author }}
 - **Analyst:** {{ analyst or "unknown" }}
 - **TLP:** {{ tlp }}
 - **Overall confidence:** {{ overall_confidence }}
@@ -47,7 +48,7 @@ No ATT&CK techniques were identified for this campaign.
 ![Campaign graph]({{ graph_png_filename }})
 {% else %}
 Graphviz (`dot`) was not available when this report was rendered, so the
-campaign graph is given below as DOT source instead of a rendered image —
+campaign graph is given below as DOT source instead of a rendered image
 render it with `lh cluster graph {{ campaign.code }} --format dot | dot -Tpng`.
 
 ```dot
@@ -128,3 +129,4 @@ This report was generated from Ledgerhound's evidence pack (sha256
 drafted by `{{ assessment.model }}` using prompt version
 `{{ assessment.prompt_version }}`, approved by {{ analyst or "unknown" }}
 on {{ generated_at.isoformat() if generated_at else "unknown" }}.
+

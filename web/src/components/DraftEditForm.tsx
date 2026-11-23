@@ -35,7 +35,7 @@ function ConfidenceSelect({
  * backend's exact enum (never free text), evidence refs are picked from
  * the actual evidence pack rather than typed by hand, and ATT&CK
  * technique ids are checked against the cached dataset client-side
- * before submit — a courtesy that mirrors, but never replaces, the
+ * before submit, a courtesy that mirrors, but never replaces, the
  * server's own `assess/drafter.py` validation on save. */
 export default function DraftEditForm({
   initialDraft,
@@ -315,7 +315,7 @@ export default function DraftEditForm({
           <label>Total observed inflow</label>
           <input type="text" className="mono" value={draft.financial.total_observed_inflow} disabled />
           <span className="page-subtitle">
-            Computed from the evidence pack — not editable; the server rejects any other value.
+            Computed from the evidence pack, not editable; the server rejects any other value.
           </span>
         </div>
         <div className="field">
@@ -426,3 +426,4 @@ export default function DraftEditForm({
     </form>
   );
 }
+

@@ -5,9 +5,9 @@ The model is called through the `AssessmentLLM` socket (see
 is generated directly from `AssessmentDraft`, so its response is always
 JSON shaped like our schema rather than free text we'd have to parse.
 That gets us schema-level validity for free; the hard constraints in the
-milestone spec — resolvable evidence refs, real ATT&CK ids, no
+milestone spec. Resolvable evidence refs, real ATT&CK ids, no
 attribution without high-confidence support, and an exact arithmetic
-match on the observed-inflow total — are business rules pydantic can't
+match on the observed-inflow total. Are business rules pydantic can't
 express, so `_validate_business_rules` checks them explicitly and a
 failure raises `DraftValidationError` before anything is persisted:
 nothing invalid is ever written to `assessments`, not even at a
@@ -20,7 +20,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Any, Literal
 
 import structlog
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -36,24 +36,32 @@ Confidence = Literal["low", "moderate", "high"]
 
 
 class KeyJudgement(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     statement: str
     confidence: Confidence
     supporting_evidence_refs: list[str] = Field(default_factory=list)
 
 
 class Targeting(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     victim_profile: str
     geographies: list[str] = Field(default_factory=list)
     impersonated_brands: list[str] = Field(default_factory=list)
 
 
 class Ttp(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     technique_id: str
     technique_name: str
     observation: str
 
 
 class Financial(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     narrative: str
     total_observed_inflow: str
     cashout_venues: list[str] = Field(default_factory=list)
@@ -61,12 +69,16 @@ class Financial(BaseModel):
 
 
 class Attribution(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     claim: str | None = None
     confidence: Confidence | None = None
     rationale: str
 
 
 class AssessmentDraft(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key_judgements: list[KeyJudgement]
     summary: str
     targeting: Targeting
@@ -78,12 +90,12 @@ class AssessmentDraft(BaseModel):
     gaps: list[str] = Field(default_factory=list)
 
 
-#: Ordering for `overall_confidence` below — index position is rank.
+#: Ordering for `overall_confidence` below. Index position is rank.
 CONFIDENCE_ORDER = ["low", "moderate", "high"]
 
 
 def overall_confidence(draft: dict[str, Any]) -> str:
-    """The draft schema has no single "overall confidence" field —
+    """The draft schema has no single "overall confidence" field
     milestone 5's STIX/report export need one number anyway, so this
     takes the highest confidence among the assessment's key judgements
     (the most defensible single answer to "how confident is this
@@ -157,7 +169,7 @@ def parse_and_validate(
 ) -> AssessmentDraft:
     """Schema-validate `raw` into an `AssessmentDraft`, then apply the
     hard constraints code enforces beyond what the schema can express.
-    Used both for a fresh LLM draft and for a human-edited one — an edit
+    Used both for a fresh LLM draft and for a human-edited one, an edit
     is re-validated exactly like a new draft, not trusted because a
     human touched it."""
     try:
@@ -223,3 +235,4 @@ def draft_assessment(
     session.flush()
     logger.info("assessment_drafted", campaign=campaign.code, version=next_version)
     return row
+

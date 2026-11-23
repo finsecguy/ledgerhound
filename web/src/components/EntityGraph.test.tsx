@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { CampaignGraph } from "../api/client";
 
 // react-force-graph-2d renders onto an HTML canvas and runs a d3-force
-// simulation — not something jsdom can meaningfully execute in a unit
+// simulation, not something jsdom can meaningfully execute in a unit
 // test. Mocked here so we can test *our* click-handling/data-mapping
 // code (EntityGraph's actual responsibility) without needing a real
 // canvas or force layout: the mock exposes one button per node/link
@@ -99,3 +99,4 @@ describe("EntityGraph", () => {
     expect(onEdgeSelect).not.toHaveBeenCalled();
   });
 });
+

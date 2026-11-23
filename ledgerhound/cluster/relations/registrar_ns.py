@@ -1,7 +1,7 @@
 """shares_registrar_and_ns: two domain indicators registered through the
 same registrar with the exact same nameserver set.
 
-**This relation can never create a campaign on its own** — shared
+**This relation can never create a campaign on its own**. Shared
 registrar+NS is common infrastructure coincidence (cheap bulk-registered
 domains routinely land on the same registrar and default nameservers) and
 only corroborates an edge that already exists from a stronger relation.
@@ -65,3 +65,4 @@ class SharesRegistrarAndNsRelation(Relation):
                         "dst_created_at": dst_created.isoformat() if dst_created else None,
                     },
                 )
+

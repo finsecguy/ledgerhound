@@ -148,8 +148,8 @@ function RuntimeSection(): React.JSX.Element {
         resetting={resetMutation.isPending}
       />
       <p className="page-subtitle">
-        The backend used by `lh assess draft` — any OpenAI-compatible provider (OpenAI, Azure
-        OpenAI, Ollama, Groq, OpenRouter, vLLM, etc.) — plus the default TLP marking and
+        The backend used by `lh assess draft`, any OpenAI-compatible provider (OpenAI, Azure
+        OpenAI, Ollama, Groq, OpenRouter, vLLM, etc.), plus the default TLP marking and
         enrichment tuning. Takes effect immediately, no restart.
       </p>
       <ErrorList errors={errors} />
@@ -462,7 +462,7 @@ function SourcesSection(): React.JSX.Element {
       />
       <p className="page-subtitle">
         Which feeds `lh collect` runs, and how often. Adding a source not backed by a collector
-        implementation has no effect — this edits which of the built-in feeds run, not new ones.
+        implementation has no effect. This edits which of the built-in feeds run, not new ones.
       </p>
       <ErrorList errors={errors} />
       <table className="data-table">
@@ -522,7 +522,7 @@ export default function Settings(): React.JSX.Element {
       <div>
         <h1 className="page-title">Settings</h1>
         <p className="page-subtitle">
-          The same config `lh config show/set/reset` edits — a change here or on the CLI is
+          The same config `lh config show/set/reset` edits, a change here or on the CLI is
           visible to both immediately, no restart.
         </p>
       </div>
@@ -533,3 +533,4 @@ export default function Settings(): React.JSX.Element {
     </div>
   );
 }
+

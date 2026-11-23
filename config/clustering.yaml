@@ -1,13 +1,13 @@
 # Clustering thresholds and relation weights for `lh cluster run`.
 #
-# These are the milestone spec's defaults; this file exists so they're
-# tunable without a code change, same as config/providers.yaml.
+# Defaults for relation weights and campaign thresholds. Edit this file
+# to retune them without a code change, same as config/providers.yaml.
 weights:
   shares_receiving_wallet: 1.0
   shares_cashout_path: 0.8
   shares_cert: 0.6
   shares_template: 0.5
-  # Corroboration only — see campaign.score_threshold and the scoring
+  # Corroboration only. See campaign.score_threshold and the scoring
   # rule that a registrar/NS-only component always scores 0.
   shares_registrar_and_ns: 0.2
 
@@ -36,3 +36,4 @@ campaign:
   # A campaign is "active" if any member indicator was observed within
   # this many days; otherwise "dormant".
   active_window_days: 30
+

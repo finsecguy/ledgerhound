@@ -1,6 +1,6 @@
 """Report rendering: all twelve fixed sections in order, and a truncated
 trace showing up explicitly in both section 7 (Financial Analysis) and
-section 12 (Methodology & Limitations) — never silently omitted."""
+section 12 (Methodology & Limitations). Never silently omitted."""
 
 from __future__ import annotations
 
@@ -167,3 +167,4 @@ def test_truncated_trace_shown_in_financial_and_methodology_sections(db_session:
 
     section_12 = markdown_text[markdown_text.index("## 12.") :]
     assert "truncated by a breadth or depth cap" in section_12
+

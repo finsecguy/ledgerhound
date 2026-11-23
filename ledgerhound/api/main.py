@@ -5,7 +5,7 @@ dev server; prod mode (`lh serve`, no `--reload`) serves the built
 `web/dist/` as static files from this same process, so CORS is a no-op
 there (same origin) but harmless to leave configured.
 
-No authentication — this runs locally against your own database, the
+No authentication. This runs locally against your own database, the
 same trust boundary the CLI already has. A public deployment would need
 auth added in front of this app before exposing it.
 """
@@ -62,7 +62,7 @@ def create_app() -> FastAPI:
     build`), it's served from this same process in prod; in dev, that
     directory doesn't exist yet (Vite's dev server serves the frontend
     instead, proxying API requests here), so nothing frontend-related is
-    registered at all — no separate "prod mode" flag needed."""
+    registered at all, no separate "prod mode" flag needed."""
     app = FastAPI(title="Ledgerhound Dashboard API", version="1.0.0")
 
     app.add_middleware(
@@ -120,3 +120,4 @@ def create_app() -> FastAPI:
 # Module-level app for `uvicorn ledgerhound.api.main:app` (including `lh
 # serve`'s own invocation, both with and without `--reload`).
 app = create_app()
+

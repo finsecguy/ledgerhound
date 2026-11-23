@@ -73,7 +73,7 @@ class UTCDateTime(types.TypeDecorator[datetime]):
     """Timezone-aware UTC datetime column.
 
     Postgres's `TIMESTAMPTZ` round-trips aware datetimes natively via
-    psycopg. SQLite has no timezone-aware datetime type at all — values
+    psycopg. SQLite has no timezone-aware datetime type at all. Values
     would silently come back naive on read, which is exactly the kind of
     bug that only shows up once something compares an old row's timestamp
     against a freshly-constructed `datetime.now(UTC)`. To keep behavior
@@ -108,14 +108,14 @@ class PreciseNumeric(types.TypeDecorator[Decimal]):
     """Arbitrary-precision decimal column, exact on every dialect.
 
     Postgres's native `NUMERIC` is already exact and arbitrary-precision,
-    so it's used directly there. SQLite has no fixed-point decimal type —
+    so it's used directly there. SQLite has no fixed-point decimal type
     plain `sqlalchemy.Numeric` silently stores SQLite values as a
     floating-point `REAL` column, which rounds (confirmed empirically:
     an 18-decimal-place wei amount comes back changed in the last several
     digits). Since on-chain values routinely need exact arbitrary
     precision (wei, satoshi totals, cumulative fund-flow sums), non-
     Postgres backends store the Decimal's exact string form as `TEXT`
-    instead and parse it back on read — the same trick as `JSONB` and
+    instead and parse it back on read, the same trick as `JSONB` and
     `GUID` above, applied to the one place a silent float conversion
     would actually corrupt data.
     """
@@ -141,3 +141,4 @@ class PreciseNumeric(types.TypeDecorator[Decimal]):
         if isinstance(value, Decimal):
             return value
         return Decimal(str(value))
+

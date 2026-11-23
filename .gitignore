@@ -15,15 +15,16 @@ dist/
 build/
 .cache/
 # STIX/MISP/IOC-feed export output (regenerable via `lh export ...` /
-# `lh publish`) — unlike reports/, this is not meant to be committed.
+# `lh publish`). Unlike reports/, this is not meant to be committed.
 /published/
 
 # Frontend (web/). dist/ is already covered by the bare "dist/" rule
 # above. openapi.json is a throwaway intermediate (`npm run
-# generate:types` regenerates it every time) — unlike
+# generate:types` regenerates it every time). Unlike
 # web/src/api/schema.ts, the actual generated types file, which IS
 # committed so the app builds without needing the Python backend
 # importable.
 node_modules/
 web/openapi.json
 *.tsbuildinfo
+

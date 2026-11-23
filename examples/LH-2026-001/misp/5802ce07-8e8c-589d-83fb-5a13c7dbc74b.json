@@ -1,0 +1,52 @@
+{
+  "Event": {
+    "Attribute": [
+      {
+        "category": "Financial fraud",
+        "comment": "eth_address",
+        "timestamp": "1780315200",
+        "to_ids": true,
+        "type": "text",
+        "uuid": "7bd535f9-1046-5095-a28e-b051144e2637",
+        "value": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"
+      },
+      {
+        "category": "Financial fraud",
+        "comment": "eth_address",
+        "timestamp": "1780315200",
+        "to_ids": true,
+        "type": "text",
+        "uuid": "6b29c71f-bd0c-54f8-9d82-2be73b98f69f",
+        "value": "0x3333333333333333333333333333333333333333"
+      },
+      {
+        "category": "Financial fraud",
+        "comment": "eth_address",
+        "timestamp": "1780315200",
+        "to_ids": true,
+        "type": "text",
+        "uuid": "6e1aec89-4429-5177-af16-2c7bbc9fea28",
+        "value": "0x1111111111111111111111111111111111111111"
+      }
+    ],
+    "Orgc": {
+      "name": "Ledgerhound"
+    },
+    "Tag": [
+      {
+        "name": "tlp:clear"
+      },
+      {
+        "name": "estimative-language:confidence-in-analytic-judgment=\"moderate\""
+      }
+    ],
+    "analysis": "2",
+    "date": "2026-06-01",
+    "distribution": "3",
+    "info": "LH-2026-001: SANITISED EXAMPLE. This campaign is a portfolio fixture, not a real cluster. The lures use wallet-support.example, claim",
+    "publish_timestamp": "1780315200",
+    "threat_level_id": "2",
+    "timestamp": "1780315200",
+    "uuid": "5802ce07-8e8c-589d-83fb-5a13c7dbc74b"
+  }
+}

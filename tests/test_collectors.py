@@ -11,9 +11,11 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+import ledgerhound.collect.cryptoscamdb as cryptoscamdb_module
 import ledgerhound.collect.scamsniffer as scamsniffer_module
 import ledgerhound.collect.urlhaus as urlhaus_module
 from ledgerhound.collect.base import Collector, CollectorRunResult
+from ledgerhound.collect.cryptoscamdb import CryptoScamDBCollector
 from ledgerhound.collect.scamsniffer import ScamSnifferCollector
 from ledgerhound.collect.urlhaus import URLhausCollector
 from ledgerhound.db.models import RawReport, Source, SourceType
@@ -81,6 +83,50 @@ def test_scamsniffer_fetch_parses_domains_and_addresses(
         "0x43412801d29861ecc4c4d86e5becfd16af86a67b",
         "0x51d07e2899c0ac6058b52c6f8f352f73d3f0e2e9",
     }
+
+
+# --- CryptoScamDB --------------------------------------------------------
+
+
+def test_cryptoscamdb_fetch_normalizes_address_shapes_and_skips_bad_entries(
+    monkeypatch: pytest.MonkeyPatch, settings: Settings
+) -> None:
+    payload = load_fixture("cryptoscamdb_scams.json")
+
+    def fake_fetch_url(
+        client: httpx.Client, url: str, *, settings: Settings | None = None, **kwargs: Any
+    ) -> httpx.Response:
+        assert url == cryptoscamdb_module.FEED_URL
+        return _text_response(url, payload)
+
+    monkeypatch.setattr(cryptoscamdb_module, "fetch_url", fake_fetch_url)
+
+    records = list(CryptoScamDBCollector(settings=settings).fetch())
+
+    assert len(records) == 2
+    by_id = {record["id"]: record for record in records}
+    assert by_id[9001]["url"] == "https://wallet-support.example/restore"
+    assert by_id[9001]["addresses"] == ["0x1111111111111111111111111111111111111111"]
+    assert by_id[9002]["addresses"] == [
+        "0x2222222222222222222222222222222222222222",
+        "1111111111111111111114oLvT2",
+    ]
+    assert all(
+        record["name"] is None or "SANITISED EXAMPLE" in record["name"] for record in records
+    )
+
+
+def test_cryptoscamdb_is_a_configured_source() -> None:
+    from pathlib import Path
+
+    from ledgerhound.collect import REGISTRY, load_sources_config
+
+    configs = load_sources_config(Path("config/sources.yaml"))
+    match = next(item for item in configs if item.name == "cryptoscamdb")
+    assert match.reliability_grade == "C"
+    assert match.cadence_minutes == 360
+    assert match.url == cryptoscamdb_module.FEED_URL
+    assert "cryptoscamdb" in REGISTRY
 
 
 # --- URLhaus -------------------------------------------------------------

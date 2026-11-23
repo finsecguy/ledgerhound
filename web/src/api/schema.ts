@@ -225,7 +225,7 @@ export interface paths {
         /**
          * List Attack Techniques
          * @description The cached ATT&CK technique list, for the review page's TTP
-         *     autocomplete — client-side rejection of an unknown technique id
+         *     autocomplete. Client-side rejection of an unknown technique id
          *     before submit, mirroring (not replacing) the server-side check
          *     `assess/drafter.py` still enforces on save.
          */
@@ -298,8 +298,8 @@ export interface paths {
         };
         /**
          * Get Feed File
-         * @description Serves one file from `<export_output_path>/feed/` — the per-
-         *     campaign JSON, the combined `iocs.json`/`iocs.csv`, or `index.html` —
+         * @description Serves one file from `<export_output_path>/feed/`, the per-
+         *     campaign JSON, the combined `iocs.json`/`iocs.csv`, or `index.html`
          *     exactly as `lh export feed` wrote it. Resolved from settings fresh on
          *     every request (not baked in at app startup), same as the PDF
          *     endpoint above, since the export directory is written well after the
@@ -537,7 +537,7 @@ export interface components {
         };
         /**
          * CampaignActivityOut
-         * @description Recent campaign activity for the overview page — the same fields
+         * @description Recent campaign activity for the overview page, the same fields
          *     `CampaignSummary` carries, so the frontend can reuse one campaign-card
          *     component for both the overview and list pages.
          */
@@ -1602,3 +1602,4 @@ export interface operations {
         };
     };
 }
+

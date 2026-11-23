@@ -1,7 +1,7 @@
 # Known-address label sets for infrastructure classification (mixers,
 # bridges, exchange deposit addresses). Loaded by ledgerhound.enrich.labels.known.
 #
-# Every set below carries its source and retrieval date — an unsourced
+# Every set below carries its source and retrieval date, an unsourced
 # label is not usable in an intelligence product. Where no dataset with
 # real, verifiable provenance was available at authoring time, the set
 # ships empty rather than populated with guessed or half-remembered
@@ -15,6 +15,7 @@ sets:
       U.S. Department of the Treasury, Office of Foreign Assets Control,
       "Cyber-related Designation" press release, 2022-08-08:
       https://ofac.treasury.gov/recent-actions/20220808
+    source_url: https://ofac.treasury.gov/recent-actions/20220808
     retrieved_at: "2026-09-02"
     confidence: 0.7
     notes: >-
@@ -70,7 +71,7 @@ sets:
   # contract addresses was found reachable at authoring time (DefiLlama's
   # bridge address API requires a paid plan; the project repos checked
   # don't publish a clean machine-readable deployment manifest). Shipping
-  # this empty rather than guessing addresses from memory — a wrong bridge
+  # this empty rather than guessing addresses from memory, a wrong bridge
   # label would make fund-flow tracing silently stop or mis-terminate at
   # the wrong node, which is worse than tracing one hop further than
   # necessary. Populate by adding another `chain`/`addresses` block below
@@ -86,20 +87,37 @@ sets:
       README "Known Limitations".
     addresses: []
 
-  # Real exchange deposit addresses come from proprietary chain-analytics
-  # clustering (Chainalysis, TRM, etc.) or paid data, not a free bulk
-  # public dataset. Shipped empty per the same reasoning as bridges above,
-  # by explicit decision when this milestone was scoped: a fabricated
-  # exchange-address seed set would be actively misleading in a security
-  # product. The loader/matcher below is fully wired — drop a real dataset
-  # in with the same shape to populate it.
+  # Exchange deposit addresses are a different set from hot wallets.
+  # Deposit addresses usually come from proprietary clustering and are not
+  # named one-by-one in an exchange disclosure. Left empty: a guessed
+  # deposit address would mislead tracing.
   - chain: eth
     label_type: exchange
     label: null
     source: null
+    source_url: null
     retrieved_at: null
     confidence: null
     notes: >-
-      Empty by design — see labels/known.py module docstring and README
-      "Known Limitations".
+      Empty. No cited public list of deposit addresses is bundled. See
+      docs/data-sources.md.
     addresses: []
+
+  # Hot wallets: only addresses an exchange (or its proof-of-reserves
+  # publication) names in a stable public document. This file does not
+  # scrape those pages and does not query a chain to discover candidates.
+  # No address cleared that bar here, so the set is empty and the loader
+  # still enforces source plus source_url before any address is accepted.
+  - chain: eth
+    label_type: exchange
+    label: "Exchange hot wallet"
+    source: null
+    source_url: null
+    retrieved_at: null
+    confidence: null
+    notes: >-
+      Empty. Add an address only with the page that attributes it, in
+      source and source_url. Do not fill this list from memory or from a
+      block explorer search.
+    addresses: []
+

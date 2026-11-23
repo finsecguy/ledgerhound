@@ -2,7 +2,7 @@
 never re-expressed: `assess.drafter.draft_assessment` for drafting,
 `assess.review.edit_assessment`/`approve_assessment`/`reject_assessment`
 for the write endpoints, and the exact same exceptions the CLI catches
-become the exact same HTTP status codes here — so the CLI and the
+become the exact same HTTP status codes here, so the CLI and the
 dashboard can never disagree about what's valid.
 """
 
@@ -232,7 +232,7 @@ def reject(
 @attack_router.get("/techniques", response_model=AttackTechniquesOut)
 def list_attack_techniques() -> AttackTechniquesOut:
     """The cached ATT&CK technique list, for the review page's TTP
-    autocomplete — client-side rejection of an unknown technique id
+    autocomplete. Client-side rejection of an unknown technique id
     before submit, mirroring (not replacing) the server-side check
     `assess/drafter.py` still enforces on save."""
     settings = get_settings()
@@ -245,3 +245,4 @@ def list_attack_techniques() -> AttackTechniquesOut:
         for technique_id, name in sorted(dataset.techniques.items())
     ]
     return AttackTechniquesOut(version=dataset.version, techniques=techniques)
+

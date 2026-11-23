@@ -72,7 +72,7 @@ def test_rdap_rfc9537_redacted_response() -> None:
     profile = parse_rdap(payload)
 
     # This fixture's registrant fn is an empty string, not one of the
-    # known marker phrases — only the RFC 9537 `redacted` array proves
+    # known marker phrases, only the RFC 9537 `redacted` array proves
     # this is redaction rather than genuinely absent data.
     assert "redacted" in payload
     assert profile.redacted is True
@@ -100,7 +100,7 @@ async def test_rdap_org_no_service_404_is_a_failure_not_unregistered() -> None:
     response body: a real "not registered" (usually empty body) versus
     "I have no RDAP server for this TLD at all" (this exact title,
     verified live against .ch and .sk). The second must raise so the
-    registry falls through to WHOIS — it must NOT be recorded as
+    registry falls through to WHOIS. It must NOT be recorded as
     registered=False, which would be actively wrong."""
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -139,7 +139,7 @@ async def test_rdap_429_is_retried_not_treated_as_not_registered() -> None:
 async def test_bootstrap_missing_tld_falls_through_registry_to_whois(
     monkeypatch: pytest.MonkeyPatch, tmp_path
 ) -> None:
-    """The bootstrap fixture has no entry for `ch` — IanaBootstrapRdapProvider
+    """The bootstrap fixture has no entry for `ch`. IanaBootstrapRdapProvider
     must raise (not crash, not silently return empty data), and the
     registry must fall through to the WHOIS provider next in the chain."""
     bootstrap_text = (ENRICH_FIXTURES / "rdap_bootstrap_no_ch.json").read_text()
@@ -149,7 +149,7 @@ async def test_bootstrap_missing_tld_falls_through_registry_to_whois(
 
     def rdap_org_handler(request: httpx.Request) -> httpx.Response:
         # A real failure (not a 404 "not registered", which is now a
-        # valid result) — rdap.org's own resolution is having trouble.
+        # valid result). Rdap.org's own resolution is having trouble.
         return httpx.Response(500)
 
     rdap_client = httpx.AsyncClient(transport=httpx.MockTransport(rdap_iana_handler))
@@ -189,7 +189,7 @@ async def test_bootstrap_missing_tld_falls_through_registry_to_whois(
     result = await registry.enrich(target, "domain_rdap")
 
     # This is a .ch domain, so the .sk-specific parser correctly does NOT
-    # apply here — the generic parser handles it (best-effort; some
+    # apply here, the generic parser handles it (best-effort; some
     # sk-specific field labels like "Authorised Registrar" won't match
     # generic patterns, which is exactly why partial=True below).
     assert result.provider == "whois"
@@ -330,3 +330,4 @@ async def test_whois_provider_raises_when_no_referral_found(
 
     with pytest.raises(ProviderError):
         await provider.enrich(target)
+

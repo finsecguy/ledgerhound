@@ -2,9 +2,9 @@
 
 A concrete collector only has to know how to turn its upstream feed into
 an iterable of JSON-ish dicts (`fetch`) and how to derive a stable hash
-per record (`content_hash`). Everything else — retrying HTTP, deduping
+per record (`content_hash`). Everything else. Retrying HTTP, deduping
 against what's already stored, and committing the batch in one
-transaction — lives here so every collector behaves identically.
+transaction. Lives here so every collector behaves identically.
 """
 
 from __future__ import annotations
@@ -182,3 +182,4 @@ class Collector(ABC):
             failed=failed,
         )
         return result
+

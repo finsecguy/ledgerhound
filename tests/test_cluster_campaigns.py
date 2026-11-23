@@ -59,7 +59,7 @@ def _link_via_wallet(session: Session, a: Indicator, b: Indicator, wallet: str) 
                 total_value=Decimal(1),
             )
         )
-    # This test session (like production) runs with autoflush=False —
+    # This test session (like production) runs with autoflush=False
     # without this, a second call for the same indicator wouldn't see the
     # first call's pending (unflushed) AddressProfile insert and would
     # try to insert a duplicate.
@@ -251,3 +251,4 @@ def test_determinism_same_state_same_edge_set(db_session: Session) -> None:
     )
 
     assert edges_first == edges_second
+

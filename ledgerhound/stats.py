@@ -1,7 +1,7 @@
 """Shared collection/extraction/enrichment summary statistics.
 
 Computed once here so `lh stats` and the dashboard's `GET /api/stats`
-endpoint can never disagree about what a number means — both call
+endpoint can never disagree about what a number means, both call
 `compute_stats`; neither re-derives the underlying queries.
 """
 
@@ -153,3 +153,4 @@ def compute_stats(session: Session, settings: Settings) -> StatsResult:
         enrichment_coverage=coverage,
         labels_by_type=labels_by_type,
     )
+

@@ -1,17 +1,17 @@
 """Enrichment scheduling: which indicators need work, at what pace, with
-what concurrency — and safely resumable if the run is killed partway
+what concurrency, and safely resumable if the run is killed partway
 through.
 
 **Resumability by construction, not by a separate checkpoint mechanism:**
 each indicator's enrichment result is committed to the database as soon
-as it's fetched, one indicator at a time (serialized — a `Session` isn't
+as it's fetched, one indicator at a time (serialized, a `Session` isn't
 safe to share across concurrently-running tasks). If the process dies
 after N indicators, those N are durably persisted and the next run's
 "needs enrichment" query naturally skips them and picks up where it left
 off; nothing is re-fetched, nothing is left half-written.
 
-**Concurrency** is bounded at the network-fetch level via a semaphore —
-many indicators' provider calls can be in flight at once — while the
+**Concurrency** is bounded at the network-fetch level via a semaphore
+many indicators' provider calls can be in flight at once, while the
 database write for each result is serialized behind a lock.
 """
 
@@ -95,7 +95,7 @@ class TokenBucket:
 
     Takes a `Clock` rather than calling `time.monotonic()`/`asyncio.sleep`
     directly so tests can drive it with a fake clock instead of actually
-    waiting — real time never has to pass to verify the limiter's math.
+    waiting. Real time never has to pass to verify the limiter's math.
     """
 
     def __init__(
@@ -346,7 +346,7 @@ def _persist_domain_facets(
         existing.registration_provider = registration_result.provider
         # RDAP/WHOIS nameservers are the registry's authoritative record;
         # DNS's are what's actually resolving live right now. Both are
-        # informative and usually agree — union rather than pick one.
+        # informative and usually agree. Union rather than pick one.
         existing.ns_records = sorted(set(dns_ns) | set(registration.nameservers))
 
     http_result = facet_results.get("domain_http")
@@ -460,3 +460,4 @@ async def run_enrichment(
     )
     logger.info("enrichment_run_complete", **asdict(result))
     return result
+

@@ -30,7 +30,7 @@ export default function ReportViewer(): React.JSX.Element {
         <h1 className="page-title mono">{code}: Report</h1>
         <div className="callout callout--info">
           {isNotFound
-            ? "This campaign has not been published yet — run `lh report render` or `lh publish` for it."
+            ? "This campaign has not been published yet. Run `lh report render` or `lh publish` for it."
             : "Failed to load the report."}
         </div>
       </div>
@@ -58,3 +58,4 @@ export default function ReportViewer(): React.JSX.Element {
     </div>
   );
 }
+

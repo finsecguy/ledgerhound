@@ -1,0 +1,11 @@
+{
+  "campaign_count": 1,
+  "campaigns": [
+    {
+      "campaign": "LH-2026-001",
+      "indicator_count": 3,
+      "last_seen": "2026-06-01T12:00:00+00:00",
+      "status": "active"
+    }
+  ]
+}

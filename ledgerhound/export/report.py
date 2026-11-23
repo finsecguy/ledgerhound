@@ -5,7 +5,7 @@ exact order (see the module's own numbered headers). Section 12,
 Methodology & Limitations, is never optional and is entirely
 auto-generated from the evidence pack (which relations linked the
 campaign, trace depth, serving providers, any partial/truncated
-results) — it's what makes the report defensible instead of just a
+results). It's what makes the report defensible instead of just a
 narrative.
 
 Pure functions of an already-fetched `(Campaign, Assessment,
@@ -27,6 +27,7 @@ import jinja2
 import markdown as markdown_lib
 import structlog
 
+from ledgerhound import __author__ as PRODUCT_AUTHOR
 from ledgerhound.assess.drafter import overall_confidence
 from ledgerhound.assess.evidence import EvidencePack
 from ledgerhound.db.models import Assessment, Campaign
@@ -62,7 +63,7 @@ def render_campaign_dot(pack: EvidencePack) -> str:
 
 def render_graph_png(dot_source: str) -> bytes | None:
     """Render DOT to PNG via the system `dot` binary (Graphviz). Returns
-    None — never raises — if Graphviz isn't installed or errors, so the
+    None. Never raises, if Graphviz isn't installed or errors, so the
     report falls back to embedding the DOT source as text instead of
     failing the whole render."""
     try:
@@ -117,7 +118,7 @@ def _partial_or_truncated_notes(pack: EvidencePack) -> list[str]:
         if trace.truncated:
             notes.append(
                 f"Fund-flow trace rooted at {trace.member_ref} (depth {trace.depth}) was "
-                "truncated by a breadth or depth cap — downstream coverage may be incomplete."
+                "truncated by a breadth or depth cap. Downstream coverage may be incomplete."
             )
         if trace.summary.get("incomplete_due_to_provider_failure"):
             notes.append(
@@ -151,6 +152,7 @@ def build_report_context(
         "overall_confidence": overall_confidence(draft),
         "generated_at": assessment.reviewed_at,
         "analyst": assessment.reviewed_by,
+        "author": PRODUCT_AUTHOR,
         "graph_dot": graph_dot,
         "graph_png_filename": graph_png_filename,
         "infrastructure_rows": _infrastructure_rows(pack),
@@ -191,3 +193,4 @@ def render_pdf(markdown_text: str, *, base_url: str | None = None) -> bytes:
         f"</head><body>{html_body}</body></html>"
     )
     return weasyprint.HTML(string=html_doc, base_url=base_url).write_pdf()  # type: ignore[no-any-return]
+
